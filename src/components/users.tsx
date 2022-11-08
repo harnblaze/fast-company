@@ -15,7 +15,9 @@ const Users: FC = () => {
       );
     });
 
-  //const handleDelete = () =>{}
+  const handleDelete = (id: string) => {
+    setUsers((prev) => prev.filter((el) => el._id !== id));
+  };
   //const renderPhrase = () =>{}
   return (
     <table className="table">
@@ -39,7 +41,11 @@ const Users: FC = () => {
               <td>{user.completedMeetings}</td>
               <td>{user.rate}</td>
               <td>
-                <button type="button" className="btn btn-danger">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => handleDelete(user._id)}
+                >
                   Delete
                 </button>
               </td>
