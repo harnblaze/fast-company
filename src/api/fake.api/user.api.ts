@@ -178,3 +178,5 @@ const users: IUser[] = [
 export function fetchAll() {
   return users;
 }
+
+export type { IQuality };
