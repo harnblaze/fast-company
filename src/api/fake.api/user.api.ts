@@ -179,4 +179,4 @@ export function fetchAll() {
   return users;
 }
 
-export type { IQuality };
+export type { IQuality, IUser, IProfessions };
