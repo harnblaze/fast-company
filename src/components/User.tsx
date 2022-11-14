@@ -1,10 +1,12 @@
 import React, { FC } from "react";
 import { IUser } from "../api/fake.api/user.api";
 import Quality from "./Quality";
-import { deleteCallback } from "../App";
+import { deleteCallback, toggleFavoriteCallback } from "../App";
+import Bookmark from "./Bookmark";
 
 interface IUserProps extends IUser {
   handleDelete: deleteCallback;
+  handleToggleFavorite: toggleFavoriteCallback;
 }
 
 const User: FC<IUserProps> = ({
@@ -14,7 +16,9 @@ const User: FC<IUserProps> = ({
   profession,
   completedMeetings,
   rate,
+  bookmark,
   handleDelete,
+  handleToggleFavorite,
 }) => {
   return (
     <tr key={_id}>
@@ -28,6 +32,13 @@ const User: FC<IUserProps> = ({
       <td>{profession.name}</td>
       <td>{completedMeetings}</td>
       <td>{rate}</td>
+      <td>
+        <Bookmark
+          isBookmark={bookmark}
+          _id={_id}
+          handleToggleFavorite={handleToggleFavorite}
+        />
+      </td>
       <td>
         <button
           type="button"
