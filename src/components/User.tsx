@@ -21,7 +21,7 @@ const User: FC<IUserProps> = ({
   handleToggleFavorite,
 }) => {
   return (
-    <tr key={_id}>
+    <tr>
       <td>{name}</td>
       <td>
         {qualities.map((quality) => (
