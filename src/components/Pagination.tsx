@@ -5,12 +5,14 @@ import _ from "lodash";
 interface IPaginationProps {
   itemsCount: number;
   pageSize: number;
+  currentPage: number;
   onPageChange: changePageCallback;
 }
 
 const Pagination: FC<IPaginationProps> = ({
   pageSize,
   itemsCount,
+  currentPage,
   onPageChange,
 }) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
@@ -21,11 +23,12 @@ const Pagination: FC<IPaginationProps> = ({
       <ul className="pagination">
         {pages.map((page) => (
           <li
-            className="page-item"
-            onClick={() => onPageChange(page)}
+            className={"page-item" + (page === currentPage ? " active" : "")}
             key={page}
           >
-            <a className="page-link">{page}</a>
+            <button className="page-link" onClick={() => onPageChange(page)}>
+              {page}
+            </button>
           </li>
         ))}
       </ul>
