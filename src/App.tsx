@@ -3,12 +3,20 @@ import api from "./api";
 import SearchStatus from "./components/SearchStatus";
 import Users from "./components/Users";
 import { IUser } from "./api/fake.api/user.api";
+import Pagination from "./components/Pagination";
 
 export type deleteCallback = (id: string) => void;
 export type toggleFavoriteCallback = (id: string) => void;
+export type changePageCallback = (index: number) => void;
 
 const App: FC = () => {
   const [users, setUsers] = useState<IUser[]>(api.users.fetchAll());
+  const count = users.length;
+  const pageSize = 4;
+
+  const handlePageChange: changePageCallback = (pageIndex) => {
+    console.log("page", pageIndex);
+  };
 
   const handleDelete: deleteCallback = (id) => {
     setUsers((prev) => prev.filter((el) => el._id !== id));
@@ -24,7 +32,7 @@ const App: FC = () => {
   return (
     <div>
       <SearchStatus length={users.length} />
-      {users.length > 0 && (
+      {count > 0 && (
         <table className="table">
           <thead>
             <tr>
@@ -44,6 +52,11 @@ const App: FC = () => {
           />
         </table>
       )}
+      <Pagination
+        itemsCount={count}
+        pageSize={pageSize}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
