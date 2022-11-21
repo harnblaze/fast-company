@@ -175,7 +175,7 @@ const users: IUser[] = [
     bookmark: false,
   },
 ];
-export function fetchAll() {
+export function fetchAll(): IUser[] {
   return users;
 }
 
