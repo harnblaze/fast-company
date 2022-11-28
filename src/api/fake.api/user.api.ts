@@ -1,20 +1,4 @@
-interface IProfession {
-  _id: string;
-  name: string;
-}
-
-interface IProfessions {
-  [name: string]: IProfession;
-}
-
-const professions: IProfessions = {
-  doctor: { _id: "67rdca3eeb7f6fgeed471818", name: "Доктор" },
-  waiter: { _id: "67rdca3eeb7f6fgeed471820", name: "Официант" },
-  physics: { _id: "67rdca3eeb7f6fgeed471814", name: "Физик" },
-  engineer: { _id: "67rdca3eeb7f6fgeed471822", name: "Инженер" },
-  actor: { _id: "67rdca3eeb7f6fgeed471824", name: "Актер" },
-  cook: { _id: "67rdca3eeb7f6fgeed471829", name: "Повар" },
-};
+import { IProfession, professions } from "./professions.api";
 
 interface IQuality {
   _id: string;
@@ -179,4 +163,4 @@ export function fetchAll(): IUser[] {
   return users;
 }
 
-export type { IQuality, IUser, IProfessions };
+export type { IQuality, IUser };
