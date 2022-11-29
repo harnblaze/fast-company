@@ -14,14 +14,16 @@ export type changePageCallback = (index: number) => void;
 export type onItemsSelectCallback = (item: IProfession) => void;
 
 const App: FC = () => {
-  const [users, setUsers] = useState<IUser[]>(api.users.fetchAll());
-  const [professions, setProfessions] = useState<IProfessions>({});
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
+    {}
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState<IProfession | undefined>();
   const pageSize = 4;
   const filteredUsers =
     selectedProf !== undefined
-      ? users.filter((user) => user.profession === selectedProf)
+      ? users.filter((user) => user.profession._id === selectedProf._id)
       : users;
   const count = filteredUsers.length;
   const userCrop = paginate(filteredUsers, currentPage, pageSize);
@@ -30,6 +32,10 @@ const App: FC = () => {
     api.professions
       .fetchAll()
       .then((data) => setProfessions(data))
+      .catch((e) => console.log(e));
+    api.users
+      .fetchAll()
+      .then((data) => setUsers(data))
       .catch((e) => console.log(e));
   }, []);
   useEffect(() => {

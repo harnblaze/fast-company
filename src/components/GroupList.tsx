@@ -3,7 +3,7 @@ import { IProfession, IProfessions } from "../api/fake.api/professions.api";
 import { onItemsSelectCallback } from "../App";
 
 interface IGroupListProps {
-  items: IProfessions;
+  items: IProfessions | IProfession[];
   valueProperty?: string;
   contentProperty?: string;
   onItemsSelect: onItemsSelectCallback;
@@ -17,6 +17,24 @@ const GroupList: FC<IGroupListProps> = ({
   onItemsSelect,
   selectedItem,
 }) => {
+  if (Array.isArray(items)) {
+    return (
+      <ul className="list-group">
+        {items.map((item) => (
+          <li
+            className={
+              "list-group-item" + (item === selectedItem ? " active" : "")
+            }
+            key={item[valueProperty]}
+            onClick={() => onItemsSelect(item)}
+            role={"button"}
+          >
+            {item[contentProperty]}
+          </li>
+        ))}
+      </ul>
+    );
+  }
   return (
     <ul className="list-group">
       {Object.keys(items).map((item) => (
