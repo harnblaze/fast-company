@@ -2,56 +2,39 @@ import React, { FC } from "react";
 import { IUser } from "../api/fake.api/user.api";
 import Users from "./Users";
 import { ISortType } from "../App";
+import TableHeader from "./TableHeader";
 
 interface IUsersTableProps {
   users: IUser[];
   handleDelete: (id: string) => void;
   handleToggleFavorite: (id: string) => void;
-  currentSort: ISortType;
+  selectedSort: ISortType;
   onSort: (name: ISortType) => void;
 }
+export interface IColumns {
+  [name: string]: { iter?: string; name?: string };
+}
+
+const columns: IColumns = {
+  name: { iter: "name", name: "Имя" },
+  qualities: { name: "Качества" },
+  professions: { iter: "professions.name", name: "Профессия" },
+  completedMeetings: { iter: "completedMeetings", name: "Встретился, раз" },
+  rate: { iter: "rate", name: "Оценка" },
+  bookmark: { iter: "bookmark", name: "Избранное" },
+  delete: {},
+};
 
 const UsersTable: FC<IUsersTableProps> = ({
   users,
   handleDelete,
   handleToggleFavorite,
-  currentSort,
+  selectedSort,
   onSort,
 }) => {
-  const handleSort = (name: string): void => {
-    if (currentSort.iter === name) {
-      onSort({
-        ...currentSort,
-        order: currentSort.order === "asc" ? "desc" : "asc",
-      });
-    } else {
-      onSort({ iter: name, order: "asc" });
-    }
-  };
-
   return (
     <table className="table">
-      <thead>
-        <tr>
-          <th onClick={() => handleSort("name")} scope="col">
-            Имя
-          </th>
-          <th scope="col">Качества</th>
-          <th onClick={() => handleSort("profession.name")} scope="col">
-            Профессия
-          </th>
-          <th onClick={() => handleSort("completedMeetings")} scope="col">
-            Встретился, раз
-          </th>
-          <th onClick={() => handleSort("rate")} scope="col">
-            Оценка
-          </th>
-          <th onClick={() => handleSort("bookmark")} scope="col">
-            Избранное
-          </th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
+      <TableHeader {...{ selectedSort, onSort, columns }} />
       <Users
         users={users}
         handleDelete={handleDelete}

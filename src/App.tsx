@@ -100,7 +100,7 @@ const App: FC = () => {
             users={userCrop}
             handleDelete={handleDelete}
             handleToggleFavorite={handleToggleFavorite}
-            currentSort={sortBy}
+            selectedSort={sortBy}
             onSort={handleSortClick}
           />
           <div className="d-flex justify-content-center">
