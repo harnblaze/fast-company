@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { toggleFavoriteCallback } from "../App";
+
+import { toggleFavoriteCallback } from "../types/callbacks";
 
 interface IBookmarkProps {
   _id: string;

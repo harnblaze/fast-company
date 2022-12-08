@@ -1,6 +1,8 @@
 import React, { FC } from "react";
-import { changePageCallback } from "../App";
+
 import _ from "lodash";
+
+import { changePageCallback } from "../types/callbacks";
 
 interface IPaginationProps {
   itemsCount: number;

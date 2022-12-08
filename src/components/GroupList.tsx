@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { IProfession, IProfessions } from "../api/fake.api/professions.api";
-import { onItemsSelectCallback } from "../App";
+import { onItemsSelectCallback } from "../types/callbacks";
 
 interface IGroupListProps {
   items: IProfessions | IProfession[];

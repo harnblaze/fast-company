@@ -1,11 +1,13 @@
-import React, { FC, ReactNode } from "react";
-import { IUser } from "../api/fake.api/user.api";
-import { ISortType } from "../App";
-import { PropertyName } from "lodash";
+import React, { FC } from "react";
+
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import Bookmark from "./Bookmark";
 import QualitiesList from "./QualitiesList";
+import Table from "./Table";
+
+import { IUser } from "../api/fake.api/user.api";
+import { IColumns, ISortType } from "../types/interfaces";
 
 interface IUsersTableProps {
   users: IUser[];
@@ -13,13 +15,6 @@ interface IUsersTableProps {
   handleToggleFavorite: (id: string) => void;
   selectedSort: ISortType;
   onSort: (name: ISortType) => void;
-}
-export interface IColumns {
-  [name: PropertyName]: {
-    path?: string;
-    name?: string;
-    component?: ((user: IUser) => ReactNode) | string;
-  };
 }
 
 const UsersTable: FC<IUsersTableProps> = ({
@@ -63,10 +58,10 @@ const UsersTable: FC<IUsersTableProps> = ({
   };
 
   return (
-    <table className="table">
+    <Table>
       <TableHeader {...{ selectedSort, onSort, columns }} />
       <TableBody data={users} columns={columns} />
-    </table>
+    </Table>
   );
 };
 

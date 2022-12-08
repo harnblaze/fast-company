@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import { ISortType } from "../App";
-import { IColumns } from "./UsersTable";
+
+import { IColumns, ISortType } from "../types/interfaces";
 
 interface ITableHeaderProps {
   selectedSort: ISortType;
