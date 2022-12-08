@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 
 import { IColumns, ISortType } from "../types/interfaces";
 
@@ -24,6 +24,18 @@ const TableHeader: FC<ITableHeaderProps> = ({
     }
   };
 
+  const renderCaret = (
+    selectedSort: ISortType,
+    path: string | undefined
+  ): ReactNode => {
+    if (selectedSort.path === path) {
+      if (selectedSort.order === "asc") {
+        return <i className="bi bi-caret-down-fill"></i>;
+      }
+      return <i className="bi bi-caret-up-fill"></i>;
+    }
+  };
+
   return (
     <thead>
       <tr>
@@ -34,7 +46,8 @@ const TableHeader: FC<ITableHeaderProps> = ({
             role={columns[column].path !== undefined ? "button" : ""}
             scope="col"
           >
-            {columns[column].name}
+            {columns[column].name}{" "}
+            {renderCaret(selectedSort, columns[column].path)}
           </th>
         ))}
       </tr>
