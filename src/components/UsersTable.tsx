@@ -1,8 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { IUser } from "../api/fake.api/user.api";
-import Users from "./Users";
 import { ISortType } from "../App";
+import { PropertyName } from "lodash";
 import TableHeader from "./TableHeader";
+import TableBody from "./TableBody";
+import Bookmark from "./Bookmark";
+import QualitiesList from "./QualitiesList";
 
 interface IUsersTableProps {
   users: IUser[];
@@ -12,18 +15,12 @@ interface IUsersTableProps {
   onSort: (name: ISortType) => void;
 }
 export interface IColumns {
-  [name: string]: { iter?: string; name?: string };
+  [name: PropertyName]: {
+    path?: string;
+    name?: string;
+    component?: ((user: IUser) => ReactNode) | string;
+  };
 }
-
-const columns: IColumns = {
-  name: { iter: "name", name: "Имя" },
-  qualities: { name: "Качества" },
-  professions: { iter: "professions.name", name: "Профессия" },
-  completedMeetings: { iter: "completedMeetings", name: "Встретился, раз" },
-  rate: { iter: "rate", name: "Оценка" },
-  bookmark: { iter: "bookmark", name: "Избранное" },
-  delete: {},
-};
 
 const UsersTable: FC<IUsersTableProps> = ({
   users,
@@ -32,14 +29,43 @@ const UsersTable: FC<IUsersTableProps> = ({
   selectedSort,
   onSort,
 }) => {
+  const columns: IColumns = {
+    name: { path: "name", name: "Имя" },
+    qualities: {
+      name: "Качества",
+      component: (user) => <QualitiesList qualities={user.qualities} />,
+    },
+    profession: { path: "profession.name", name: "Профессия" },
+    completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
+    rate: { path: "rate", name: "Оценка" },
+    bookmark: {
+      path: "bookmark",
+      name: "Избранное",
+      component: (user) => (
+        <Bookmark
+          isBookmark={user.bookmark}
+          _id={user._id}
+          handleToggleFavorite={handleToggleFavorite}
+        />
+      ),
+    },
+    delete: {
+      component: (user) => (
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => handleDelete(user._id)}
+        >
+          Delete
+        </button>
+      ),
+    },
+  };
+
   return (
     <table className="table">
       <TableHeader {...{ selectedSort, onSort, columns }} />
-      <Users
-        users={users}
-        handleDelete={handleDelete}
-        handleToggleFavorite={handleToggleFavorite}
-      />
+      <TableBody data={users} columns={columns} />
     </table>
   );
 };

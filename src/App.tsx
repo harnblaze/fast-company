@@ -14,7 +14,7 @@ export type toggleFavoriteCallback = (id: string) => void;
 export type changePageCallback = (index: number) => void;
 export type onItemsSelectCallback = (item: IProfession) => void;
 export interface ISortType {
-  iter: string;
+  path: string;
   order: "asc" | "desc";
 }
 
@@ -26,7 +26,7 @@ const App: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState<IProfession | undefined>();
   const [sortBy, setSortBy] = useState<ISortType>({
-    iter: "name",
+    path: "name",
     order: "asc",
   });
 
@@ -36,7 +36,7 @@ const App: FC = () => {
       ? users.filter((user) => user.profession._id === selectedProf._id)
       : users;
   const count = filteredUsers.length;
-  const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+  const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
   const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
   useEffect(() => {

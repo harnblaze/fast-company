@@ -14,13 +14,13 @@ const TableHeader: FC<ITableHeaderProps> = ({
   columns,
 }) => {
   const handleSort = (name: string | undefined): void => {
-    if (selectedSort.iter === name) {
+    if (selectedSort.path === name) {
       onSort({
         ...selectedSort,
         order: selectedSort.order === "asc" ? "desc" : "asc",
       });
     } else if (name !== undefined) {
-      onSort({ iter: name, order: "asc" });
+      onSort({ path: name, order: "asc" });
     }
   };
 
@@ -30,8 +30,8 @@ const TableHeader: FC<ITableHeaderProps> = ({
         {Object.keys(columns).map((column) => (
           <th
             key={column}
-            onClick={() => handleSort(columns[column].iter)}
-            role={columns[column].iter !== undefined ? "button" : ""}
+            onClick={() => handleSort(columns[column].path)}
+            role={columns[column].path !== undefined ? "button" : ""}
             scope="col"
           >
             {columns[column].name}

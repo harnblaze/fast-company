@@ -3,7 +3,7 @@ export interface IProfession {
 }
 
 export interface IProfessions {
-  [name: string]: IProfession;
+  [profession: string]: IProfession;
 }
 
 export const professionsObject: IProfessions = {
