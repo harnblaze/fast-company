@@ -8,6 +8,7 @@ import Table from "./Table";
 
 import { IUser } from "../api/fake.api/user.api";
 import { IColumns, ISortType } from "../types/interfaces";
+import { Link } from "react-router-dom";
 
 interface IUsersTableProps {
   users: IUser[];
@@ -25,7 +26,11 @@ const UsersTable: FC<IUsersTableProps> = ({
   onSort,
 }) => {
   const columns: IColumns = {
-    name: { path: "name", name: "Имя" },
+    name: {
+      path: "name",
+      name: "Имя",
+      component: (user) => <Link to={"/users/" + user._id}>{user.name}</Link>,
+    },
     qualities: {
       name: "Качества",
       component: (user) => <QualitiesList qualities={user.qualities} />,

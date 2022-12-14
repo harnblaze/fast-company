@@ -19,7 +19,6 @@ const TableBody: FC<ITableBodyPops> = ({ data, columns }) => {
       } else return component;
     } else {
       const itemPath = columns[column].path as PropertyPath;
-      console.log(_.get(item, itemPath));
       return _.get(item, itemPath);
     }
   };

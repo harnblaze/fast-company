@@ -164,11 +164,18 @@ const fetchAll = async (): Promise<IUser[]> =>
   await new Promise((resolve) => {
     setTimeout(() => {
       resolve(users);
-    }, 2000);
+    }, 1000);
+  });
+const getById = async (id: string): Promise<IUser | undefined> =>
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(users.find((user) => user._id === id));
+    }, 1000);
   });
 
 export default {
   fetchAll,
+  getById,
 };
 
 export type { IQuality, IUser };

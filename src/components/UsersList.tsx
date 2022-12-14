@@ -19,7 +19,7 @@ import {
 } from "../types/callbacks";
 import { ISortType } from "../types/interfaces";
 
-const Users: FC = () => {
+const UsersList: FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
     {}
@@ -119,4 +119,4 @@ const Users: FC = () => {
   } else return <div>loading...</div>;
 };
 
-export default Users;
+export default UsersList;
