@@ -1,7 +1,7 @@
 {
   "name": "fast-company",
   "version": "0.1.0",
-  "homepage": "https://harnblaze.github.io/react-gh-pages",
+  "homepage": "https://harnblaze.github.io/fast-company",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
