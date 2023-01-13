@@ -8,8 +8,13 @@ const Login: FC = () => {
     setData((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
+  const handleSubmit = (event: React.FormEvent): void => {
+    event.preventDefault();
+    console.log(data);
+  };
+
   return (
-    <form action="">
+    <form onSubmit={handleSubmit}>
       <TextField
         label="Электронная почта"
         name="email"
@@ -23,6 +28,7 @@ const Login: FC = () => {
         value={data.password}
         onChange={handleChange}
       />
+      <button type="submit">Отправить</button>
     </form>
   );
 };
