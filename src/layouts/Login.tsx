@@ -1,5 +1,28 @@
 import React, { FC, useEffect, useState } from "react";
 import TextField from "../components/TextField";
+import { validator } from "../utils/validator";
+
+export interface dataState {
+  email: string;
+  password: string;
+}
+const validatorConfig = {
+  email: {
+    isRequired: {
+      message: "Электронная почта обязательна для заполнения",
+    },
+  },
+  password: {
+    isRequired: {
+      message: "Пароль обязателен для заполнения",
+    },
+  },
+};
+export type fieldNameType = keyof dataState;
+export type validatorConfigType = typeof validatorConfig;
+export type validatorType = keyof typeof validatorConfig["email"];
+export type validatorFieldConfigType =
+  typeof validatorConfig["email"]["isRequired"];
 
 const Login: FC = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -14,14 +37,8 @@ const Login: FC = () => {
   }, [data]);
 
   const validate = (): boolean => {
-    const errors = { email: "", password: "" };
-    for (const fieldName in data) {
-      if (data[fieldName as keyof typeof data].trim() === "") {
-        errors[
-          fieldName as keyof typeof data
-        ] = `${fieldName} обязательно для заполнения`;
-      }
-    }
+    const errors = validator(data, validatorConfig);
+
     setErrors(errors);
     return Object.values(errors).every((el) => el === "");
   };
