@@ -6,6 +6,7 @@ interface TextFieldProps {
   name: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
 }
 
 const TextField: FC<TextFieldProps> = ({
@@ -14,6 +15,7 @@ const TextField: FC<TextFieldProps> = ({
   name,
   value,
   onChange,
+  error,
 }) => {
   return (
     <div>
@@ -25,6 +27,7 @@ const TextField: FC<TextFieldProps> = ({
         value={value}
         onChange={onChange}
       />
+      <p>{error}</p>
     </div>
   );
 };
