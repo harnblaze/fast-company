@@ -3,8 +3,7 @@ import TextField from "../components/TextField";
 import { validator } from "../utils/validator";
 
 export interface dataState {
-  email: string;
-  password: string;
+  [fieldName: string]: string;
 }
 const validatorConfig = {
   email: {
@@ -19,19 +18,26 @@ const validatorConfig = {
     isRequired: {
       message: "Пароль обязателен для заполнения",
     },
+    isCapitalSymbol: {
+      message: "Пароль должен содержать хотя бы одну заглавную букву",
+    },
+    isDigitSymbol: {
+      message: "Пароль должен содержать хотя бы одну цифру",
+    },
+    isMinSymbol: {
+      message: "Пароль должен состоять из 8ми символов",
+    },
   },
 };
-export type fieldNameType = keyof dataState;
+
 export type validatorConfigType = typeof validatorConfig;
-export type validatorType =
-  | keyof typeof validatorConfig["email"]
-  | keyof typeof validatorConfig["password"];
-export type validatorFieldConfigType =
-  typeof validatorConfig["email"]["isRequired"];
+export interface validatorFieldConfigType {
+  message: string;
+}
 
 const Login: FC = () => {
-  const [data, setData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [data, setData] = useState<dataState>({ email: "", password: "" });
+  const [errors, setErrors] = useState<dataState>({ email: "", password: "" });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setData((prev) => ({ ...prev, [event.target.name]: event.target.value }));

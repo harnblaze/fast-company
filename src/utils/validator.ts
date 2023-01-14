@@ -1,9 +1,7 @@
 import {
   dataState,
-  fieldNameType,
   validatorConfigType,
   validatorFieldConfigType,
-  validatorType,
 } from "../layouts/Login";
 
 export const validator = (
@@ -13,35 +11,44 @@ export const validator = (
   const errors: dataState = { email: "", password: "" };
 
   function validate(
-    method: validatorType,
+    method: string,
     data: string,
     config: validatorFieldConfigType
   ): string {
-    const emailRegExp = /^\S+@\S+\.\S+/g;
+    let regExp = /^\S+@\S+\.\S+/g;
+    let statusValidate = false;
     switch (method) {
       case "isRequired":
-        if (data.trim() === "") {
-          return config.message;
-        }
+        statusValidate = data.trim() === "";
         break;
       case "isEmail":
-        if (!emailRegExp.test(data)) {
-          return config.message;
-        }
+        regExp = /^\S+@\S+\.\S+/g;
+        statusValidate = !regExp.test(data);
+        break;
+      case "isCapitalSymbol":
+        regExp = /[A-Z]+/g;
+        statusValidate = !regExp.test(data);
+        break;
+      case "isDigitSymbol":
+        regExp = /[0-9]+/g;
+        statusValidate = !regExp.test(data);
+        break;
+      case "isMinSymbol":
+        statusValidate = data.length < 8;
         break;
     }
-    return "";
+    return statusValidate ? config.message : "";
   }
 
   for (const fieldName in data) {
-    for (const validateMethod in config[fieldName as fieldNameType]) {
-      if (errors[fieldName as fieldNameType] === "") {
-        errors[fieldName as fieldNameType] = validate(
-          validateMethod as validatorType,
-          data[fieldName as fieldNameType],
-
+    // @ts-expect-error
+    for (const validateMethod in config[fieldName]) {
+      if (errors[fieldName] === "") {
+        errors[fieldName] = validate(
+          validateMethod,
+          data[fieldName],
           // @ts-expect-error
-          config[fieldName as keyof dataState][validateMethod as validatorType]
+          config[fieldName][validateMethod]
         );
       }
     }
