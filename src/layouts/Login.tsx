@@ -61,6 +61,8 @@ const Login: FC = () => {
     console.log(data);
   };
 
+  const isValid = Object.values(errors).every((el) => el === "");
+
   return (
     <form onSubmit={handleSubmit}>
       <TextField
@@ -78,7 +80,9 @@ const Login: FC = () => {
         onChange={handleChange}
         error={errors.password}
       />
-      <button type="submit">Отправить</button>
+      <button type="submit" disabled={!isValid}>
+        Отправить
+      </button>
     </form>
   );
 };
