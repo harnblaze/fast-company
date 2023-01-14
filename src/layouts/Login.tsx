@@ -11,6 +11,9 @@ const validatorConfig = {
     isRequired: {
       message: "Электронная почта обязательна для заполнения",
     },
+    isEmail: {
+      message: "Электронная почта введена некоректно",
+    },
   },
   password: {
     isRequired: {
@@ -20,7 +23,9 @@ const validatorConfig = {
 };
 export type fieldNameType = keyof dataState;
 export type validatorConfigType = typeof validatorConfig;
-export type validatorType = keyof typeof validatorConfig["email"];
+export type validatorType =
+  | keyof typeof validatorConfig["email"]
+  | keyof typeof validatorConfig["password"];
 export type validatorFieldConfigType =
   typeof validatorConfig["email"]["isRequired"];
 
