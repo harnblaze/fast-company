@@ -24,6 +24,7 @@ const UsersList: FC = () => {
   const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
     {}
   );
+  const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState<IProfession | undefined>();
   const [sortBy, setSortBy] = useState<ISortType>({
@@ -43,7 +44,7 @@ const UsersList: FC = () => {
   }, []);
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedProf]);
+  }, [selectedProf, search]);
 
   const handlePageChange: changePageCallback = (pageIndex) => {
     setCurrentPage(pageIndex);
@@ -60,8 +61,14 @@ const UsersList: FC = () => {
     setUsers(newUsers);
   };
 
+  const handleSearchInput = (value: string): void => {
+    setSelectedProf(undefined);
+    setSearch(value);
+  };
+
   const onItemsSelect: onItemsSelectCallback = (item) => {
     setSelectedProf(item);
+    setSearch("");
   };
 
   const clearFilter = (): void => {
@@ -73,10 +80,19 @@ const UsersList: FC = () => {
   };
   if (users.length !== 0) {
     const pageSize = 8;
-    const filteredUsers =
-      selectedProf !== undefined
-        ? users.filter((user) => user.profession._id === selectedProf._id)
-        : users;
+    let filteredUsers: IUser[];
+    if (search !== "") {
+      filteredUsers = users.filter((user) =>
+        user.name.toLowerCase().includes(search.toLowerCase())
+      );
+    } else if (selectedProf !== undefined) {
+      filteredUsers = users.filter(
+        (user) => user.profession._id === selectedProf._id
+      );
+    } else {
+      filteredUsers = users;
+    }
+
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
@@ -93,27 +109,31 @@ const UsersList: FC = () => {
             Очистить
           </button>
         </div>
-
-        {count > 0 && (
-          <div className="d-flex flex-column flex-grow-1">
-            <SearchStatus length={count} />
-            <UsersTable
-              users={userCrop}
-              handleDelete={handleDelete}
-              handleToggleFavorite={handleToggleFavorite}
-              selectedSort={sortBy}
-              onSort={handleSortClick}
+        <div className="d-flex flex-column flex-grow-1">
+          <SearchStatus length={count} />
+          <input
+            type="text"
+            name="search"
+            placeholder="Search..."
+            value={search}
+            onChange={(evt) => handleSearchInput(evt.target.value)}
+          />
+          <UsersTable
+            users={userCrop}
+            handleDelete={handleDelete}
+            handleToggleFavorite={handleToggleFavorite}
+            selectedSort={sortBy}
+            onSort={handleSortClick}
+          />
+          <div className="d-flex justify-content-center">
+            <Pagination
+              itemsCount={count}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
-            <div className="d-flex justify-content-center">
-              <Pagination
-                itemsCount={count}
-                pageSize={pageSize}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-              />
-            </div>
           </div>
-        )}
+        </div>
       </div>
     );
   } else return <div>loading...</div>;
