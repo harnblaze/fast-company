@@ -27,13 +27,18 @@ export const validatorConfig = {
       message: "Пароль должен состоять из 8ми символов",
     },
   },
+  profession: {
+    isRequired: {
+      message: "Профессия должна быть выбрана",
+    },
+  },
 };
 
 export const validator = (
   data: dataState,
   config: validatorConfigType
 ): dataState => {
-  const errors: dataState = { email: "", password: "" };
+  const errors: dataState = { email: "", password: "", profession: "" };
 
   function validate(
     method: string,
