@@ -1,25 +1,28 @@
 import React, { FC, useEffect, useState } from "react";
 
-import api from "../api";
+import api from "../../../api";
 import _ from "lodash";
-import { paginate } from "../utils/paginate";
+import { paginate } from "../../../utils/paginate";
 
-import SearchStatus from "../components/SearchStatus";
-import Pagination from "../components/Pagination";
-import GroupList from "../components/GroupList";
-import UsersTable from "../components/UsersTable";
+import SearchStatus from "../../ui/SearchStatus";
+import Pagination from "../../common/Pagination";
+import GroupList from "../../common/GroupList";
+import UsersTable from "../../ui/UsersTable";
 
-import { IProfession, IProfessions } from "../api/fake.api/professions.api";
-import { IUser } from "../api/fake.api/user.api";
+import {
+  IProfession,
+  IProfessions,
+} from "../../../api/fake.api/professions.api";
+import { IUser } from "../../../api/fake.api/user.api";
 import {
   changePageCallback,
   deleteCallback,
   onItemsSelectCallback,
   toggleFavoriteCallback,
-} from "../types/callbacks";
-import { ISortType } from "../types/interfaces";
+} from "../../../types/callbacks";
+import { ISortType } from "../../../types/interfaces";
 
-const UsersList: FC = () => {
+const UsersListPage: FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
     {}
@@ -139,4 +142,4 @@ const UsersList: FC = () => {
   } else return <div>loading...</div>;
 };
 
-export default UsersList;
+export default UsersListPage;

@@ -2,7 +2,7 @@ import {
   dataState,
   validatorConfigType,
   validatorFieldConfigType,
-} from "../layouts/Login";
+} from "../components/ui/LoginForm";
 
 export const validator = (
   data: dataState,

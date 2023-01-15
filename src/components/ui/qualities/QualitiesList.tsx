@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import Quality from "./Quality";
-import { IQuality } from "../api/fake.api/user.api";
+import { IQuality } from "../../../api/fake.api/user.api";
 
 interface IQualitiesListProps {
   qualities: IQuality[];

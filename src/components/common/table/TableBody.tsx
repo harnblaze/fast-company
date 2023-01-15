@@ -2,8 +2,8 @@ import React, { FC, ReactNode } from "react";
 
 import _, { PropertyPath } from "lodash";
 
-import { IUser } from "../api/fake.api/user.api";
-import { IColumns } from "../types/interfaces";
+import { IUser } from "../../../api/fake.api/user.api";
+import { IColumns } from "../../../types/interfaces";
 
 interface ITableBodyPops {
   data: IUser[];

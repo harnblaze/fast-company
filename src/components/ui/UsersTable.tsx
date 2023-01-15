@@ -1,14 +1,13 @@
 import React, { FC } from "react";
 
-import TableHeader from "./TableHeader";
-import TableBody from "./TableBody";
-import Bookmark from "./Bookmark";
-import QualitiesList from "./QualitiesList";
-import Table from "./Table";
+import Bookmark from "../common/Bookmark";
+import Qualities from "./qualities";
+import Table, { TableBody, TableHeader } from "../common/table/";
 
-import { IUser } from "../api/fake.api/user.api";
-import { IColumns, ISortType } from "../types/interfaces";
 import { Link } from "react-router-dom";
+
+import { IUser } from "../../api/fake.api/user.api";
+import { IColumns, ISortType } from "../../types/interfaces";
 
 interface IUsersTableProps {
   users: IUser[];
@@ -33,7 +32,7 @@ const UsersTable: FC<IUsersTableProps> = ({
     },
     qualities: {
       name: "Качества",
-      component: (user) => <QualitiesList qualities={user.qualities} />,
+      component: (user) => <Qualities qualities={user.qualities} />,
     },
     profession: { path: "profession.name", name: "Профессия" },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
-import { IUser } from "../api/fake.api/user.api";
-import api from "../api";
-import QualitiesList from "./QualitiesList";
+import { IUser } from "../../../api/fake.api/user.api";
+import api from "../../../api";
+import QualitiesList from "../../ui/qualities/QualitiesList";
 import { useHistory } from "react-router-dom";
 
 interface IUserPage {

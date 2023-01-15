@@ -1,10 +1,10 @@
 import React, { FC } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/ui/Navbar";
 import Main from "./layouts/Main";
 import Login from "./layouts/Login";
 import Users from "./layouts/Users";
-import NotFound from "./components/NotFound";
+import NotFound from "./layouts/NotFound";
 
 const App: FC = () => {
   return (

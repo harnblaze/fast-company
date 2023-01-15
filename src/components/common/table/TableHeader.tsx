@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
 
-import { IColumns, ISortType } from "../types/interfaces";
+import { IColumns, ISortType } from "../../../types/interfaces";
 
 interface ITableHeaderProps {
   selectedSort: ISortType;
