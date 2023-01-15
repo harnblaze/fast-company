@@ -2,7 +2,32 @@ import {
   dataState,
   validatorConfigType,
   validatorFieldConfigType,
-} from "../components/ui/LoginForm";
+} from "../types/validatorTypes";
+
+export const validatorConfig = {
+  email: {
+    isRequired: {
+      message: "Электронная почта обязательна для заполнения",
+    },
+    isEmail: {
+      message: "Электронная почта введена некоректно",
+    },
+  },
+  password: {
+    isRequired: {
+      message: "Пароль обязателен для заполнения",
+    },
+    isCapitalSymbol: {
+      message: "Пароль должен содержать хотя бы одну заглавную букву",
+    },
+    isDigitSymbol: {
+      message: "Пароль должен содержать хотя бы одну цифру",
+    },
+    isMinSymbol: {
+      message: "Пароль должен состоять из 8ми символов",
+    },
+  },
+};
 
 export const validator = (
   data: dataState,

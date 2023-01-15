@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
+
 import { validator, validatorConfig } from "../../utils/validator";
 import TextField from "../common/form/TextField";
 import { dataState } from "../../types/validatorTypes";
 
-const LoginForm: FC = () => {
+const RegisterForm: FC = () => {
   const [data, setData] = useState<dataState>({ email: "", password: "" });
   const [errors, setErrors] = useState<dataState>({ email: "", password: "" });
 
@@ -59,4 +60,4 @@ const LoginForm: FC = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
