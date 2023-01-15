@@ -6,12 +6,14 @@ import { dataState } from "../../types/validatorTypes";
 import { IProfession } from "../../api/fake.api/professions.api";
 import api from "../../api";
 import SelectField from "../common/form/SelectField";
+import RadioField from "../common/form/RadioField";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataState>({
     email: "",
     password: "",
     profession: "",
+    gender: "male",
   });
   const [professions, setProfessions] = useState<IProfession[]>([]);
   const [errors, setErrors] = useState<dataState>({
@@ -35,7 +37,6 @@ const RegisterForm: FC = () => {
 
   useEffect(() => {
     validate();
-    console.log(errors);
   }, [data]);
 
   const validate = (): boolean => {
@@ -78,6 +79,17 @@ const RegisterForm: FC = () => {
         value={data.profession}
         professions={professions}
         error={errors.profession}
+      />
+      <RadioField
+        options={[
+          { name: "Male", value: "male" },
+          { name: "Female", value: "female" },
+          { name: "Other", value: "other" },
+        ]}
+        name={"gender"}
+        onChange={handleChange}
+        value={data.gender}
+        label={"Gender"}
       />
       <button
         type="submit"

@@ -23,7 +23,6 @@ const SelectField: FC<selectFieldProps> = ({
   const getSelectClasses = (): string => {
     return "form-select" + (error !== "" ? " is-invalid" : "");
   };
-  console.log(error);
   return (
     <div className="mb-4">
       <label htmlFor="validationCustom04" className="form-label">

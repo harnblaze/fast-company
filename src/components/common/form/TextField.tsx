@@ -27,7 +27,9 @@ const TextField: FC<TextFieldProps> = ({
 
   return (
     <div className="mb-4">
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className="form-label">
+        {label}
+      </label>
       <div className="input-group has-validation">
         <input
           type={showPassword ? "text" : type}
