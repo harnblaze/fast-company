@@ -17,8 +17,12 @@ const TextField: FC<TextFieldProps> = ({
   onChange,
   error,
 }) => {
+  const getInputClasses = (): string => {
+    return "form-control" + (error !== "" ? " is-invalid" : "");
+  };
+
   return (
-    <div>
+    <div className="mb-4">
       <label htmlFor={name}>{label}</label>
       <input
         type={type}
@@ -26,8 +30,9 @@ const TextField: FC<TextFieldProps> = ({
         name={name}
         value={value}
         onChange={onChange}
+        className={getInputClasses()}
       />
-      <p>{error}</p>
+      <div className="invalid-feedback">{error}</div>
     </div>
   );
 };
