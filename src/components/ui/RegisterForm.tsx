@@ -2,36 +2,44 @@ import React, { FC, useEffect, useState } from "react";
 
 import { validator, validatorConfig } from "../../utils/validator";
 import TextField from "../common/form/TextField";
-import { dataState } from "../../types/validatorTypes";
+import { dataRegisterState } from "../../types/validatorTypes";
 import { IProfession } from "../../api/fake.api/professions.api";
 import api from "../../api";
 import SelectField from "../common/form/SelectField";
 import RadioField from "../common/form/RadioField";
+import { IQualities } from "../../api/fake.api/qualities";
+import MultiSelectField from "../common/form/MultiSelectField";
+import { onFormFieldChangeCallback } from "../../types/callbacks";
 
 const RegisterForm: FC = () => {
-  const [data, setData] = useState<dataState>({
+  const [data, setData] = useState<dataRegisterState>({
     email: "",
     password: "",
     profession: "",
     gender: "male",
+    qualities: [],
   });
+  const [qualities, setQualities] = useState<IQualities>({});
   const [professions, setProfessions] = useState<IProfession[]>([]);
-  const [errors, setErrors] = useState<dataState>({
+  const [errors, setErrors] = useState({
     email: "",
     password: "",
     profession: "",
+    qualities: "",
   });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
-    setData((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  const handleChange: onFormFieldChangeCallback = (target) => {
+    setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   useEffect(() => {
     api.professions
       .fetchAll()
       .then((data) => setProfessions(data))
+      .catch((e) => console.log(e));
+    api.qualities
+      .fetchAll()
+      .then((data) => setQualities(data))
       .catch((e) => console.log(e));
   }, []);
 
@@ -74,7 +82,7 @@ const RegisterForm: FC = () => {
       />
       <SelectField
         label="Профессия"
-        defaultOption="Выберите профессию..."
+        defaultOption="Выберите свою профессию..."
         onChange={handleChange}
         value={data.profession}
         professions={professions}
@@ -89,7 +97,15 @@ const RegisterForm: FC = () => {
         name={"gender"}
         onChange={handleChange}
         value={data.gender}
-        label={"Gender"}
+        label={"Выберите ваш пол"}
+      />
+      <MultiSelectField
+        error={errors.qualities}
+        label="Выберите ваши качества"
+        options={qualities}
+        onChange={handleChange}
+        name="qualities"
+        defaultValue={[]}
       />
       <button
         type="submit"

@@ -1,14 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
 import { validator, validatorConfig } from "../../utils/validator";
 import TextField from "../common/form/TextField";
-import { dataState } from "../../types/validatorTypes";
+import { dataLoginState } from "../../types/validatorTypes";
+import { onFormFieldChangeCallback } from "../../types/callbacks";
 
 const LoginForm: FC = () => {
-  const [data, setData] = useState<dataState>({ email: "", password: "" });
-  const [errors, setErrors] = useState<dataState>({ email: "", password: "" });
+  const [data, setData] = useState<dataLoginState>({ email: "", password: "" });
+  const [errors, setErrors] = useState<dataLoginState>({
+    email: "",
+    password: "",
+  });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setData((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  const handleChange: onFormFieldChangeCallback = (target) => {
+    setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   useEffect(() => {

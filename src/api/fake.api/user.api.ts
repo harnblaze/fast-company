@@ -178,4 +178,4 @@ export default {
   getById,
 };
 
-export type { IQuality, IUser };
+export type { IUser };

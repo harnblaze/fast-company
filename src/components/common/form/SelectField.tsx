@@ -1,12 +1,11 @@
 import React, { FC } from "react";
 import { IProfession } from "../../../api/fake.api/professions.api";
+import { onFormFieldChangeCallback } from "../../../types/callbacks";
 
 interface selectFieldProps {
   label: string;
   value: string;
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
+  onChange: onFormFieldChangeCallback;
   defaultOption: string;
   professions: IProfession[];
   error: string;
@@ -23,6 +22,10 @@ const SelectField: FC<selectFieldProps> = ({
   const getSelectClasses = (): string => {
     return "form-select" + (error !== "" ? " is-invalid" : "");
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    onChange({ name: event.target.name, value: event.target.value });
+  };
   return (
     <div className="mb-4">
       <label htmlFor="validationCustom04" className="form-label">
@@ -33,7 +36,7 @@ const SelectField: FC<selectFieldProps> = ({
         id="validationCustom04"
         name="profession"
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
       >
         <option disabled value="">
           {defaultOption}

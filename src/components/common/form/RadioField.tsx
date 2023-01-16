@@ -1,12 +1,10 @@
 import React, { FC } from "react";
-import { dataState } from "../../../types/validatorTypes";
+import { onFormFieldChangeCallback } from "../../../types/callbacks";
 
 interface RadioFieldProps {
-  options: dataState[];
+  options: Array<{ name: string; value: string }>;
   name: string;
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
+  onChange: onFormFieldChangeCallback;
   value: string;
   label: string;
 }
@@ -17,6 +15,10 @@ const RadioField: FC<RadioFieldProps> = ({
   value,
   label,
 }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    onChange({ name: event.target.name, value: event.target.value });
+  };
+
   return (
     <div className="mb-4">
       <label htmlFor="validationCustom04" className="form-label">
@@ -35,7 +37,7 @@ const RadioField: FC<RadioFieldProps> = ({
               checked={option.value === value}
               id={option.name + "_" + option.value}
               value={option.value}
-              onChange={onChange}
+              onChange={handleChange}
             />
             <label
               className="form-check-label"

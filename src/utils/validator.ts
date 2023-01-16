@@ -1,5 +1,7 @@
 import {
-  dataState,
+  dataLoginState,
+  dataRegisterState,
+  errorState,
   validatorConfigType,
   validatorFieldConfigType,
 } from "../types/validatorTypes";
@@ -10,7 +12,7 @@ export const validatorConfig = {
       message: "Электронная почта обязательна для заполнения",
     },
     isEmail: {
-      message: "Электронная почта введена некоректно",
+      message: "Электронная почта введена некорректно",
     },
   },
   password: {
@@ -32,13 +34,23 @@ export const validatorConfig = {
       message: "Профессия должна быть выбрана",
     },
   },
+  qualities: {
+    isRequired: {
+      message: "Хотя бы одно качество должно быть выбрано",
+    },
+  },
 };
 
 export const validator = (
-  data: dataState,
+  data: dataLoginState | dataRegisterState,
   config: validatorConfigType
-): dataState => {
-  const errors: dataState = { email: "", password: "", profession: "" };
+): errorState => {
+  const errors: errorState = {
+    email: "",
+    password: "",
+    profession: "",
+    qualities: "",
+  };
 
   function validate(
     method: string,
@@ -49,7 +61,12 @@ export const validator = (
     let statusValidate = false;
     switch (method) {
       case "isRequired":
-        statusValidate = data.trim() === "";
+        if (Array.isArray(data)) {
+          statusValidate = data.length === 0;
+        }
+        if (typeof data === "string") {
+          statusValidate = data.trim() === "";
+        }
         break;
       case "isEmail":
         regExp = /^\S+@\S+\.\S+/g;
@@ -73,9 +90,14 @@ export const validator = (
   for (const fieldName in data) {
     // @ts-expect-error
     for (const validateMethod in config[fieldName]) {
+      // @ts-expect-error
+
       if (errors[fieldName] === "") {
+        // @ts-expect-error
+
         errors[fieldName] = validate(
           validateMethod,
+          // @ts-expect-error
           data[fieldName],
           // @ts-expect-error
           config[fieldName][validateMethod]
