@@ -8,7 +8,7 @@ interface selectFieldProps {
   onChange: onFormFieldChangeCallback;
   defaultOption: string;
   professions: IProfession[];
-  error: string;
+  error?: string;
 }
 
 const SelectField: FC<selectFieldProps> = ({
@@ -47,7 +47,7 @@ const SelectField: FC<selectFieldProps> = ({
           </option>
         ))}
       </select>
-      {error !== "" && <div className="invalid-feedback">{error}</div>}
+      <div className="invalid-feedback">{error}</div>
     </div>
   );
 };

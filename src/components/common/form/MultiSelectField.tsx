@@ -8,7 +8,7 @@ interface MultiSelectFieldProps {
   name: string;
   options: IQualities;
   onChange: onFormFieldChangeCallback;
-  error: string;
+  error?: string;
   defaultValue: any;
 }
 
@@ -48,7 +48,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         onChange={handleChange}
         name={name}
       />
-      {error !== "" && <div className="invalid-feedback">{error}</div>}
+      <div className="invalid-feedback">{error}</div>
     </div>
   );
 };

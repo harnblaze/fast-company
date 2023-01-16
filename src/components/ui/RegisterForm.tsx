@@ -2,7 +2,10 @@ import React, { FC, useEffect, useState } from "react";
 
 import { validator, validatorConfig } from "../../utils/validator";
 import TextField from "../common/form/TextField";
-import { dataRegisterState } from "../../types/validatorTypes";
+import {
+  dataRegisterState,
+  errorRegisterState,
+} from "../../types/validatorTypes";
 import { IProfession } from "../../api/fake.api/professions.api";
 import api from "../../api";
 import SelectField from "../common/form/SelectField";
@@ -10,6 +13,7 @@ import RadioField from "../common/form/RadioField";
 import { IQualities } from "../../api/fake.api/qualities";
 import MultiSelectField from "../common/form/MultiSelectField";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
+import CheckboxField from "../common/form/checkboxField";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -18,6 +22,7 @@ const RegisterForm: FC = () => {
     profession: "",
     gender: "male",
     qualities: [],
+    license: false,
   });
   const [qualities, setQualities] = useState<IQualities>({});
   const [professions, setProfessions] = useState<IProfession[]>([]);
@@ -26,6 +31,7 @@ const RegisterForm: FC = () => {
     password: "",
     profession: "",
     qualities: "",
+    license: "",
   });
 
   const handleChange: onFormFieldChangeCallback = (target) => {
@@ -50,7 +56,7 @@ const RegisterForm: FC = () => {
   const validate = (): boolean => {
     const errors = validator(data, validatorConfig);
 
-    setErrors(errors);
+    setErrors(errors as errorRegisterState);
     return Object.values(errors).every((el) => el === "");
   };
 
@@ -107,6 +113,14 @@ const RegisterForm: FC = () => {
         name="qualities"
         defaultValue={[]}
       />
+      <CheckboxField
+        name="license"
+        value={data.license}
+        onChange={handleChange}
+        error={errors.license}
+      >
+        Подтвердить <a>лицензионное соглашение</a>
+      </CheckboxField>
       <button
         type="submit"
         disabled={!isValid}

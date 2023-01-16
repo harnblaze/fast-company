@@ -1,12 +1,17 @@
 import React, { FC, useEffect, useState } from "react";
 import { validator, validatorConfig } from "../../utils/validator";
 import TextField from "../common/form/TextField";
-import { dataLoginState } from "../../types/validatorTypes";
+import { dataLoginState, errorLoginState } from "../../types/validatorTypes";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
+import CheckboxField from "../common/form/checkboxField";
 
 const LoginForm: FC = () => {
-  const [data, setData] = useState<dataLoginState>({ email: "", password: "" });
-  const [errors, setErrors] = useState<dataLoginState>({
+  const [data, setData] = useState<dataLoginState>({
+    email: "",
+    password: "",
+    stayOn: false,
+  });
+  const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
@@ -22,7 +27,7 @@ const LoginForm: FC = () => {
   const validate = (): boolean => {
     const errors = validator(data, validatorConfig);
 
-    setErrors(errors);
+    setErrors(errors as errorLoginState);
     return Object.values(errors).every((el) => el === "");
   };
 
@@ -52,6 +57,9 @@ const LoginForm: FC = () => {
         onChange={handleChange}
         error={errors.password}
       />
+      <CheckboxField name="stayOn" value={data.stayOn} onChange={handleChange}>
+        Оставаться в системе
+      </CheckboxField>
       <button
         type="submit"
         disabled={!isValid}

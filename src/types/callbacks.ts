@@ -7,7 +7,7 @@ export type changePageCallback = (index: number) => void;
 export type onItemsSelectCallback = (item: IProfession) => void;
 export interface onFormFieldChangeCallbackArgs {
   name: string;
-  value: string | IQuality[];
+  value: string | IQuality[] | boolean;
 }
 export type onFormFieldChangeCallback = (
   arg: onFormFieldChangeCallbackArgs

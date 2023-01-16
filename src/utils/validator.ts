@@ -5,6 +5,7 @@ import {
   validatorConfigType,
   validatorFieldConfigType,
 } from "../types/validatorTypes";
+import { IQuality } from "../api/fake.api/qualities";
 
 export const validatorConfig = {
   email: {
@@ -39,6 +40,11 @@ export const validatorConfig = {
       message: "Хотя бы одно качество должно быть выбрано",
     },
   },
+  license: {
+    isRequired: {
+      message: "Лицензию необходимо подтвердить",
+    },
+  },
 };
 
 export const validator = (
@@ -50,11 +56,12 @@ export const validator = (
     password: "",
     profession: "",
     qualities: "",
+    license: "",
   };
 
   function validate(
     method: string,
-    data: string,
+    data: string | boolean | IQuality[],
     config: validatorFieldConfigType
   ): string {
     let regExp = /^\S+@\S+\.\S+/g;
@@ -67,21 +74,24 @@ export const validator = (
         if (typeof data === "string") {
           statusValidate = data.trim() === "";
         }
+        if (typeof data === "boolean") {
+          statusValidate = !data;
+        }
         break;
       case "isEmail":
         regExp = /^\S+@\S+\.\S+/g;
-        statusValidate = !regExp.test(data);
+        statusValidate = !regExp.test(data as string);
         break;
       case "isCapitalSymbol":
         regExp = /[A-Z]+/g;
-        statusValidate = !regExp.test(data);
+        statusValidate = !regExp.test(data as string);
         break;
       case "isDigitSymbol":
         regExp = /[0-9]+/g;
-        statusValidate = !regExp.test(data);
+        statusValidate = !regExp.test(data as string);
         break;
       case "isMinSymbol":
-        statusValidate = data.length < 8;
+        statusValidate = (data as string).length < 8;
         break;
     }
     return statusValidate ? config.message : "";
@@ -91,7 +101,6 @@ export const validator = (
     // @ts-expect-error
     for (const validateMethod in config[fieldName]) {
       // @ts-expect-error
-
       if (errors[fieldName] === "") {
         // @ts-expect-error
 
