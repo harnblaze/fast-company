@@ -5,6 +5,7 @@ import { onFormFieldChangeCallback } from "../../../types/callbacks";
 interface selectFieldProps {
   label: string;
   value: string;
+  name: string;
   onChange: onFormFieldChangeCallback;
   defaultOption: string;
   professions: IProfession[];
@@ -14,6 +15,7 @@ interface selectFieldProps {
 const SelectField: FC<selectFieldProps> = ({
   label,
   value,
+  name,
   onChange,
   defaultOption,
   professions,
@@ -28,13 +30,13 @@ const SelectField: FC<selectFieldProps> = ({
   };
   return (
     <div className="mb-4">
-      <label htmlFor="validationCustom04" className="form-label">
+      <label htmlFor={name} className="form-label">
         {label}
       </label>
       <select
         className={getSelectClasses()}
-        id="validationCustom04"
-        name="profession"
+        id={name}
+        name={name}
         value={value}
         onChange={handleChange}
       >
