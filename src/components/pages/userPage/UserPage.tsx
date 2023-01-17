@@ -9,7 +9,7 @@ interface IUserPage {
 }
 const UserPage: FC<IUserPage> = ({ id }) => {
   const [user, setUser] = useState<IUser>();
-  const { push } = useHistory();
+  const history = useHistory();
   useEffect(() => {
     api.users
       .getById(id)
@@ -17,8 +17,8 @@ const UserPage: FC<IUserPage> = ({ id }) => {
       .catch((e) => console.log(e));
   }, []);
 
-  const handleButtonAllUsersClick = (): void => {
-    push("/users");
+  const handleButtonClick = (): void => {
+    history.push(history.location.pathname + "/edit");
   };
 
   if (user === undefined) return <h1>loading...</h1>;
@@ -30,7 +30,7 @@ const UserPage: FC<IUserPage> = ({ id }) => {
       <QualitiesList qualities={user.qualities} />
       <div>{`Completed meetings: ${user.completedMeetings}`}</div>
       <h2>{`Rate: ${user.rate}`}</h2>
-      <button onClick={handleButtonAllUsersClick}>Все пользователи</button>
+      <button onClick={handleButtonClick}>Изменить</button>
     </>
   );
 };

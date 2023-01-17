@@ -92,7 +92,7 @@ const RegisterForm: FC = () => {
         name="profession"
         onChange={handleChange}
         value={data.profession}
-        professions={professions}
+        options={professions}
         error={errors.profession}
       />
       <RadioField

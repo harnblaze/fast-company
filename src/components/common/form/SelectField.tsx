@@ -8,7 +8,7 @@ interface selectFieldProps {
   name: string;
   onChange: onFormFieldChangeCallback;
   defaultOption: string;
-  professions: IProfession[];
+  options: IProfession[];
   error?: string;
 }
 
@@ -18,7 +18,7 @@ const SelectField: FC<selectFieldProps> = ({
   name,
   onChange,
   defaultOption,
-  professions,
+  options,
   error,
 }) => {
   const getSelectClasses = (): string => {
@@ -43,7 +43,7 @@ const SelectField: FC<selectFieldProps> = ({
         <option disabled value="">
           {defaultOption}
         </option>
-        {professions.map((profession) => (
+        {options.map((profession) => (
           <option key={profession._id} value={profession._id}>
             {profession.name}
           </option>
