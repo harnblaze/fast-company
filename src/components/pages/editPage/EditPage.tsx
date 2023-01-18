@@ -6,36 +6,84 @@ import TextField from "../../common/form/TextField";
 import SelectField from "../../common/form/SelectField";
 import api from "../../../api";
 import RadioField from "../../common/form/RadioField";
+import MultiSelectField from "../../common/form/MultiSelectField";
+import { useHistory } from "react-router-dom";
+import { validator, validatorConfigEditPage } from "../../../utils/validator";
+import {
+  dataEditPageState,
+  errorEditPage,
+  IQualitiesData,
+} from "../../../types/validatorTypes";
 
 interface EditPageProps {
   id: string;
 }
 
 const EditPage: FC<EditPageProps> = ({ id }) => {
-  const [data, setData] = useState({
+  const history = useHistory();
+  const [data, setData] = useState<dataEditPageState>({
     email: "",
     name: "",
     _id: id,
-    gender: "male",
+    sex: "male",
     profession: "",
-    qualities: [{ name: "", value: "" }],
+    qualities: [{ label: "", value: "", color: "" }],
+    bookmark: false,
+    rate: 0,
+    completedMeetings: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [professions, setProfessions] = useState<IProfession[]>([]);
-  const [, setQualities] = useState<IQualities>({});
+  const [qualities, setQualities] = useState<IQualities>({});
+  const [errors, setErrors] = useState({
+    email: "",
+    name: "",
+    profession: "",
+    qualities: "",
+  });
 
-  const transformQualities = (
-    data: IQuality[]
-  ): Array<{ name: string; value: string }> => {
+  const transformQualities = (data: IQuality[]): IQualitiesData[] => {
     return data.map((quality) => ({
-      name: quality.name,
+      label: quality.name,
       value: quality._id,
+      color: quality.color,
     }));
+  };
+  const getProfessionById = (id: string): IProfession => {
+    const profession = professions.find((prof) => prof?._id === id);
+    return profession as IProfession;
+  };
+  const getQualities = (quals: IQualitiesData[]): IQuality[] => {
+    const qualitiesList: IQuality[] = [];
+    quals.forEach((qual) => {
+      for (const quality in qualities) {
+        if (qual.value === qualities[quality]._id) {
+          qualitiesList.push(qualities[quality]);
+        }
+      }
+    });
+    return qualitiesList;
   };
 
   const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
-    console.log(data);
+    const isValid = validate();
+    if (!isValid) return;
+    const { profession, qualities } = data;
+    void api.users
+      .update(id, {
+        ...data,
+        profession: getProfessionById(profession),
+        qualities: getQualities(qualities),
+      })
+      .then(() => history.push(`/users/${id}`));
+  };
+
+  const validate = (): boolean => {
+    const errors = validator(data, validatorConfigEditPage);
+    console.log(errors);
+    setErrors(errors as errorEditPage);
+    return Object.values(errors).every((el) => el === "");
   };
 
   const handleChange: onFormFieldChangeCallback = (target) => {
@@ -62,9 +110,14 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
     api.professions
       .fetchAll()
       .then((data) => setProfessions(data))
-      .catch((e) => console.log(e))
-      .finally(() => setIsLoading(false));
+      .catch((e) => console.log(e));
   }, []);
+  useEffect(() => {
+    if (data._id !== "" && professions.length > 0) setIsLoading(false);
+    validate();
+  }, [data, professions]);
+
+  const isValid = Object.values(errors).every((el) => el === "");
 
   return (
     <div className="container mt-5">
@@ -78,12 +131,14 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
                 label="Имя"
                 name="name"
                 value={data.name}
+                error={errors.name}
                 onChange={handleChange}
               />
               <TextField
                 label="Электронная почта"
                 name="email"
                 value={data.email}
+                error={errors.email}
                 onChange={handleChange}
               />
               <SelectField
@@ -92,6 +147,7 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
                 name="profession"
                 onChange={handleChange}
                 value={data.profession}
+                error={errors.profession}
                 options={professions}
               />
               <RadioField
@@ -100,13 +156,24 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
                   { name: "Female", value: "female" },
                   { name: "Other", value: "other" },
                 ]}
-                name={"gender"}
+                name={"sex"}
                 onChange={handleChange}
-                value={data.gender}
+                value={data.sex}
                 label={"Выберите ваш пол"}
               />
-
-              <button type="submit" className="btn btn-primary w-100 mx-auto">
+              <MultiSelectField
+                label="Выберите ваши качества"
+                options={qualities}
+                onChange={handleChange}
+                name="qualities"
+                defaultValue={data.qualities}
+                error={errors.qualities}
+              />
+              <button
+                type="submit"
+                className="btn btn-primary w-100 mx-auto"
+                disabled={!isValid}
+              >
                 Отправить
               </button>
             </form>

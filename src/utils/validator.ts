@@ -1,4 +1,5 @@
 import {
+  dataEditPageState,
   dataLoginState,
   dataRegisterState,
   errorState,
@@ -47,8 +48,34 @@ export const validatorConfig = {
   },
 };
 
+export const validatorConfigEditPage = {
+  email: {
+    isRequired: {
+      message: "Электронная почта обязательна для заполнения",
+    },
+    isEmail: {
+      message: "Электронная почта введена некорректно",
+    },
+  },
+  name: {
+    isMinNameSymbol: {
+      message: "Имя должен состоять минимум из трех символов",
+    },
+  },
+  profession: {
+    isRequired: {
+      message: "Профессия должна быть выбрана",
+    },
+  },
+  qualities: {
+    isRequired: {
+      message: "Хотя бы одно качество должно быть выбрано",
+    },
+  },
+};
+
 export const validator = (
-  data: dataLoginState | dataRegisterState,
+  data: dataLoginState | dataRegisterState | dataEditPageState,
   config: validatorConfigType
 ): errorState => {
   const errors: errorState = {
@@ -57,6 +84,7 @@ export const validator = (
     profession: "",
     qualities: "",
     license: "",
+    name: "",
   };
 
   function validate(
@@ -92,6 +120,9 @@ export const validator = (
         break;
       case "isMinSymbol":
         statusValidate = (data as string).length < 8;
+        break;
+      case "isMinNameSymbol":
+        statusValidate = (data as string).length < 3;
         break;
     }
     return statusValidate ? config.message : "";

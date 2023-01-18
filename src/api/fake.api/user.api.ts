@@ -188,30 +188,36 @@ const users: IUser[] = [
     bookmark: false,
   },
 ];
-if (localStorage.getItem("users") === undefined) {
+if (localStorage.getItem("users") === null) {
   localStorage.setItem("users", JSON.stringify(users));
 }
 
 const fetchAll = async (): Promise<IUser[]> =>
   await new Promise((resolve) => {
     setTimeout(() => {
-      resolve(users);
+      const usersArray = JSON.parse(localStorage.getItem("users") as string);
+      resolve(usersArray);
     }, 1000);
   });
 
 const update = async (id: string, data: IUser): Promise<IUser[]> =>
   await new Promise((resolve) => {
-    const users = JSON.parse(localStorage.getItem("users") as string);
-    const userIndex = users.findIndex((u: IUser) => u._id === id);
-    users[userIndex] = { ...users[userIndex], ...data };
-    localStorage.setItem("users", JSON.stringify(users));
-    resolve(users[userIndex]);
+    const usersArray = JSON.parse(localStorage.getItem("users") as string);
+    const userIndex = usersArray.findIndex(
+      (u: IUser) => u._id === id
+    ) as number;
+    users[userIndex] = { ...usersArray[userIndex], ...data };
+    localStorage.setItem("users", JSON.stringify(usersArray));
+    resolve(usersArray[userIndex]);
   });
 
 const getById = async (id: string): Promise<IUser> =>
   await new Promise((resolve) => {
     setTimeout(() => {
-      const user = users.find((user) => user?._id === id);
+      const usersArray = JSON.parse(
+        localStorage.getItem("users") as string
+      ) as IUser[];
+      const user = usersArray.find((user) => user?._id === id);
       if (user !== undefined) resolve(user);
     }, 1000);
   });

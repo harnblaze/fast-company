@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "react-select";
-import { IQualities, IQuality } from "../../../api/fake.api/qualities";
+import { IQualities } from "../../../api/fake.api/qualities";
 import { onFormFieldChangeCallback } from "../../../types/callbacks";
 
 interface MultiSelectFieldProps {
@@ -9,7 +9,7 @@ interface MultiSelectFieldProps {
   options: IQualities;
   onChange: onFormFieldChangeCallback;
   error?: string;
-  defaultValue: IQuality[];
+  defaultValue: any[];
 }
 
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
