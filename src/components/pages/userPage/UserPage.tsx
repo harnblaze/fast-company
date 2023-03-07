@@ -4,6 +4,7 @@ import api from "../../../api";
 import UserCard from "../../ui/UserCard";
 import QualitiesCard from "../../ui/QualitiesCard";
 import MeetingsCard from "../../ui/MeetingsCard";
+import CommentsCard from "../../ui/CommentsCard";
 
 interface IUserPageProps {
   id: string;
@@ -29,7 +30,9 @@ const UserPage: FC<IUserPageProps> = ({ id }) => {
             <QualitiesCard qualities={user.qualities} />
             <MeetingsCard meetings={user.completedMeetings} />
           </div>
-          <div className="col-md-8"></div>
+          <div className="col-md-8">
+            <CommentsCard />
+          </div>
         </div>
       </div>
     </>

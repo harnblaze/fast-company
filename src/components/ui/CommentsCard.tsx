@@ -31,7 +31,7 @@ const CommentsCard: FC = () => {
         <div className="card-body ">
           <h2>Comments</h2>
           <hr />
-          <CommentsList />
+          <CommentsList comments={sortedComments} />
         </div>
       </div>
     </>
