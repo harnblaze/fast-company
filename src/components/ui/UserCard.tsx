@@ -28,10 +28,9 @@ const UserCard: FC<IUserCardProps> = ({ user }) => {
             )
               .toString(36)
               .substring(7)}.svg`}
-            className="rounded-circle shadow-1-strong me-3"
+            className="rounded-circle"
             alt="avatar"
-            width="65"
-            height="65"
+            width="150"
           />
           <div className="mt-3">
             <h4>{user.name}</h4>

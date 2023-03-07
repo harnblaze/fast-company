@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { IComment } from "../../../api/fake.api/comments";
 import { IUser } from "../../../api/fake.api/user.api";
 import api from "../../../api";
+import { displayDate } from "../../../utils/displayDate";
 
 interface ICommentProps {
   comment: IComment;
@@ -46,7 +47,10 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
                   <div className="d-flex justify-content-between align-items-center">
                     <p className="mb-1 ">
                       {user?.name}{" "}
-                      <span className="small"> - {comment.created_at}</span>
+                      <span className="small">
+                        {" "}
+                        - {displayDate(comment.created_at)}
+                      </span>
                     </p>
                     <button className="btn btn-sm text-primary d-flex align-items-center">
                       <i className="bi bi-x-lg"></i>
