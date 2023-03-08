@@ -4,13 +4,14 @@ import Comment from "./Comment";
 
 interface ICommentsListProps {
   comments: IComment[];
+  onRemove: (id: string) => void;
 }
 
-const CommentsList: FC<ICommentsListProps> = ({ comments }) => {
+const CommentsList: FC<ICommentsListProps> = ({ comments, onRemove }) => {
   return (
     <>
       {comments.map((comment) => (
-        <Comment key={comment._id} comment={comment} />
+        <Comment key={comment._id} comment={comment} onRemove={onRemove} />
       ))}
     </>
   );

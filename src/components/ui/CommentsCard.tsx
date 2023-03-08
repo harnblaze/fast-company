@@ -21,9 +21,18 @@ const CommentsCard: FC = () => {
   const handleSubmit = (data: dataCommentForm): void => {
     void api.comments
       .add({ ...data, pageId: userId })
-      // @ts-expect-error
-
-      .then((data) => setComments([...comments, { ...data, pageId: userId }]));
+      .then((data) =>
+        setComments([...(comments ?? []), { ...data, pageId: userId }])
+      )
+      .catch((e) => console.log(e));
+  };
+  const handleRemoveComment = (id: string): void => {
+    void api.comments
+      .remove(id)
+      .then((id) => {
+        setComments((comments ?? []).filter((x) => x._id !== id));
+      })
+      .catch((e) => console.log(e));
   };
 
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
@@ -40,7 +49,10 @@ const CommentsCard: FC = () => {
         <div className="card-body ">
           <h2>Comments</h2>
           <hr />
-          <CommentsList comments={sortedComments} />
+          <CommentsList
+            comments={sortedComments}
+            onRemove={handleRemoveComment}
+          />
         </div>
       </div>
     </>

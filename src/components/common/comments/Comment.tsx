@@ -6,9 +6,10 @@ import { displayDate } from "../../../utils/displayDate";
 
 interface ICommentProps {
   comment: IComment;
+  onRemove: (id: string) => void;
 }
 
-const Comment: FC<ICommentProps> = ({ comment }) => {
+const Comment: FC<ICommentProps> = ({ comment, onRemove }) => {
   const [user, setUser] = useState<IUser>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,6 +23,9 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
       })
       .catch((e) => console.log(e));
   }, []);
+  const handleClick = (): void => {
+    onRemove(comment._id);
+  };
 
   return (
     <div className="bg-light card-body  mb-3">
@@ -52,7 +56,10 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
                         - {displayDate(comment.created_at)}
                       </span>
                     </p>
-                    <button className="btn btn-sm text-primary d-flex align-items-center">
+                    <button
+                      className="btn btn-sm text-primary d-flex align-items-center"
+                      onClick={handleClick}
+                    >
                       <i className="bi bi-x-lg"></i>
                     </button>
                   </div>
