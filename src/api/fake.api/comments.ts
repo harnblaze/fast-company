@@ -73,8 +73,6 @@ const remove = async (id: string): Promise<string> =>
     window.setTimeout(function () {
       const comments = JSON.parse(localStorage.getItem("comments") as string);
       const newComments = comments.filter((x: IComment) => x._id !== id);
-      console.log(id);
-      console.log(newComments);
       localStorage.setItem("comments", JSON.stringify(newComments));
       resolve(id);
     }, 200);

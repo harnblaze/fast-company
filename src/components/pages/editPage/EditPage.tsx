@@ -14,6 +14,7 @@ import {
   errorEditPage,
   IQualitiesData,
 } from "../../../types/validatorTypes";
+import BackHistoryButton from "../../common/BackButton";
 
 interface EditPageProps {
   id: string;
@@ -81,7 +82,6 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
 
   const validate = (): boolean => {
     const errors = validator(data, validatorConfigEditPage);
-    console.log(errors);
     setErrors(errors as errorEditPage);
     return Object.values(errors).every((el) => el === "");
   };
@@ -121,6 +121,7 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
 
   return (
     <div className="container mt-5">
+      <BackHistoryButton />
       <div className="row">
         <div className="col-lg-6  col-md-6 col-sm-10 mx-auto p-4 shadow">
           {isLoading ? (
