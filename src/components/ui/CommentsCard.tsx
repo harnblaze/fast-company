@@ -5,6 +5,7 @@ import api from "../../api";
 import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/AddCommentForm";
 import CommentsList from "../common/comments/CommentsList";
+import { dataCommentForm } from "../../types/validatorTypes";
 
 const CommentsCard: FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -17,6 +18,14 @@ const CommentsCard: FC = () => {
       .catch((e) => console.log(e));
   }, []);
 
+  const handleSubmit = (data: dataCommentForm): void => {
+    void api.comments
+      .add({ ...data, pageId: userId })
+      // @ts-expect-error
+
+      .then((data) => setComments([...comments, { ...data, pageId: userId }]));
+  };
+
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
 
   return (
@@ -24,7 +33,7 @@ const CommentsCard: FC = () => {
       <div className="card mb-2">
         {" "}
         <div className="card-body ">
-          <AddCommentForm />
+          <AddCommentForm onSubmit={handleSubmit} />
         </div>
       </div>
       <div className="card mb-3">

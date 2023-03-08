@@ -17,8 +17,11 @@ const initialData = {
   userId: "",
   content: "",
 };
+interface IAddCommentFormProps {
+  onSubmit: (data: dataCommentForm) => void;
+}
 
-const AddCommentForm: FC = () => {
+const AddCommentForm: FC<IAddCommentFormProps> = ({ onSubmit }) => {
   const [data, setData] = useState<dataCommentForm>(initialData);
   const [users, setUsers] = useState<IUser[]>();
   const [errors, setErrors] = useState<errorCommentForm>(initialData);
@@ -49,6 +52,7 @@ const AddCommentForm: FC = () => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
+    onSubmit(data);
     clearForm();
   };
 
