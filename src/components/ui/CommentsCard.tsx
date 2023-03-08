@@ -9,7 +9,7 @@ import { dataCommentForm } from "../../types/validatorTypes";
 
 const CommentsCard: FC = () => {
   const { userId } = useParams<{ userId: string }>();
-  const [comments, setComments] = useState<IComment[]>();
+  const [comments, setComments] = useState<IComment[]>([]);
 
   useEffect(() => {
     api.comments
@@ -21,16 +21,14 @@ const CommentsCard: FC = () => {
   const handleSubmit = (data: dataCommentForm): void => {
     void api.comments
       .add({ ...data, pageId: userId })
-      .then((data) =>
-        setComments([...(comments ?? []), { ...data, pageId: userId }])
-      )
+      .then((data) => setComments([...comments, { ...data, pageId: userId }]))
       .catch((e) => console.log(e));
   };
   const handleRemoveComment = (id: string): void => {
     void api.comments
       .remove(id)
       .then((id) => {
-        setComments((comments ?? []).filter((x) => x._id !== id));
+        setComments(comments.filter((x) => x._id !== id));
       })
       .catch((e) => console.log(e));
   };

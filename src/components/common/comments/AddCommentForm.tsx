@@ -56,8 +56,6 @@ const AddCommentForm: FC<IAddCommentFormProps> = ({ onSubmit }) => {
     clearForm();
   };
 
-  if (users === undefined) return <div>Loading...</div>;
-
   return (
     <div>
       <h2>New Comment</h2>
@@ -68,7 +66,7 @@ const AddCommentForm: FC<IAddCommentFormProps> = ({ onSubmit }) => {
           name={"userId"}
           value={data.userId}
           error={errors.userId}
-          options={users}
+          options={users ?? []}
         />
         <TextAreaField
           label={"Введите сообщение"}
