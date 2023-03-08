@@ -1,4 +1,5 @@
 import {
+  dataCommentForm,
   dataEditPageState,
   dataLoginState,
   dataRegisterState,
@@ -74,8 +75,25 @@ export const validatorConfigEditPage = {
   },
 };
 
+export const validatorConfigCommentForm = {
+  userId: {
+    isRequired: {
+      message: "Выберите от чьего имени вы хотите отправить сообщение",
+    },
+  },
+  content: {
+    isRequired: {
+      message: "Сообщение не может быть пустым",
+    },
+  },
+};
+
 export const validator = (
-  data: dataLoginState | dataRegisterState | dataEditPageState,
+  data:
+    | dataLoginState
+    | dataRegisterState
+    | dataEditPageState
+    | dataCommentForm,
   config: validatorConfigType
 ): errorState => {
   const errors: errorState = {

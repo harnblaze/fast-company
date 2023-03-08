@@ -1,14 +1,15 @@
 import React, { FC } from "react";
-import { IProfession } from "../../../api/fake.api/professions.api";
 import { onFormFieldChangeCallback } from "../../../types/callbacks";
+import { IProfession } from "../../../api/fake.api/professions.api";
+import { IUser } from "../../../api/fake.api/user.api";
 
 interface selectFieldProps {
-  label: string;
+  label?: string;
   value: string;
   name: string;
   onChange: onFormFieldChangeCallback;
   defaultOption: string;
-  options: IProfession[];
+  options: IProfession[] | IUser[];
   error?: string;
 }
 
