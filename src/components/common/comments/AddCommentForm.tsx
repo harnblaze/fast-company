@@ -11,6 +11,7 @@ import {
 import api from "../../../api";
 import { onFormFieldChangeCallback } from "../../../types/callbacks";
 import SelectField from "../form/SelectField";
+import TextAreaField from "../form/TextAreaField";
 
 const initialData = {
   userId: "",
@@ -37,7 +38,7 @@ const AddCommentForm: FC = () => {
       .fetchAll()
       .then(setUsers)
       .catch((e) => console.log(e));
-  });
+  }, []);
 
   const clearForm = (): void => {
     setData(initialData);
@@ -65,6 +66,16 @@ const AddCommentForm: FC = () => {
           error={errors.userId}
           options={users}
         />
+        <TextAreaField
+          label={"Введите сообщение"}
+          name={"content"}
+          value={data.content}
+          onChange={handleChange}
+          error={errors.content}
+        />
+        <div className="d-flex justify-content-end">
+          <button className="btn btn-primary">Опубликовать</button>
+        </div>
       </form>
     </div>
   );
