@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 import { IUser } from "../../api/fake.api/user.api";
 import { IColumns, ISortType } from "../../types/interfaces";
+import Profession from "./Profession";
 
 interface IUsersTableProps {
   users: IUser[];
@@ -34,7 +35,10 @@ const UsersTable: FC<IUsersTableProps> = ({
       name: "Качества",
       component: (user) => <Qualities qualities={user.qualities} />,
     },
-    profession: { path: "profession.name", name: "Профессия" },
+    profession: {
+      name: "Профессия",
+      component: (user) => <Profession id={user.profession._id} />,
+    },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },
     bookmark: {
