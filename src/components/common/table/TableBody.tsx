@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from "react";
 
 import _, { PropertyPath } from "lodash";
 
-import { IUser } from "../../../api/fake.api/user.api";
+import { IUser } from "../../../hooks/useUsers";
 import { IColumns } from "../../../types/interfaces";
 
 interface ITableBodyPops {

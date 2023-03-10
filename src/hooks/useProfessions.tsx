@@ -38,7 +38,7 @@ const ProfessionProvider: FC<IProfessionProviderProps> = ({ children }) => {
 
   const getProfessionsList = async (): Promise<void> => {
     try {
-      const content = await professionService.get();
+      const { content } = await professionService.get();
       setProfessions(content);
       setIsLoading(false);
     } catch (error) {
@@ -54,7 +54,6 @@ const ProfessionProvider: FC<IProfessionProviderProps> = ({ children }) => {
       setError(null);
     }
   }, [error]);
-
   return (
     <ProfessionContext.Provider
       value={{ isLoading, professions, getProfession }}

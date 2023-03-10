@@ -10,8 +10,8 @@ interface IQualitiesListProps {
 const QualitiesList: FC<IQualitiesListProps> = ({ qualities }) => {
   return (
     <>
-      {qualities.map((quality) => (
-        <Quality {...quality} key={quality._id} />
+      {qualities.map((quality, id) => (
+        <Quality {...quality} key={`${quality._id}_${id}`} />
       ))}
     </>
   );

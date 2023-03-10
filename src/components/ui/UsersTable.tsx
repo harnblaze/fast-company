@@ -6,7 +6,7 @@ import Table, { TableBody, TableHeader } from "../common/table/";
 
 import { Link } from "react-router-dom";
 
-import { IUser } from "../../api/fake.api/user.api";
+import { IUser } from "../../hooks/useUsers";
 import { IColumns, ISortType } from "../../types/interfaces";
 import Profession from "./Profession";
 
@@ -37,7 +37,10 @@ const UsersTable: FC<IUsersTableProps> = ({
     },
     profession: {
       name: "Профессия",
-      component: (user) => <Profession id={user.profession._id} />,
+      component: (user) => {
+        console.log(user.profession);
+        return <Profession id={user.profession} />;
+      },
     },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },

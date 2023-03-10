@@ -1,7 +1,25 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-import { IUser } from "../api/fake.api/user.api";
+
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
+
+interface IQuality {
+  _id: string;
+  name: string;
+  color: string;
+}
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  sex: string;
+  profession: string;
+  qualities: IQuality[];
+  completedMeetings: number;
+  rate: number;
+  bookmark: boolean;
+}
 
 interface UseUserType {
   users: IUser[];
@@ -28,7 +46,7 @@ const UserProvider: FC<IUserProviderProps> = ({ children }) => {
 
   const getUsers = async (): Promise<void> => {
     try {
-      const content = await userService.get();
+      const { content } = await userService.get();
       setUsers(content);
       setIsLoading(false);
     } catch (error) {

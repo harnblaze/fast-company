@@ -1,5 +1,5 @@
 import { PropertyName } from "lodash";
-import { IUser } from "../api/fake.api/user.api";
+import { IUser } from "../hooks/useUsers";
 import { ReactNode } from "react";
 
 export interface ISortType {

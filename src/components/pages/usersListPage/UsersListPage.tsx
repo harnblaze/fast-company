@@ -13,7 +13,7 @@ import {
   IProfession,
   IProfessions,
 } from "../../../api/fake.api/professions.api";
-import { IUser } from "../../../api/fake.api/user.api";
+import { IUser, useUser } from "../../../hooks/useUsers";
 import {
   changePageCallback,
   deleteCallback,
@@ -21,7 +21,6 @@ import {
   toggleFavoriteCallback,
 } from "../../../types/callbacks";
 import { ISortType } from "../../../types/interfaces";
-import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage: FC = () => {
   const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
@@ -89,7 +88,7 @@ const UsersListPage: FC = () => {
       );
     } else if (selectedProf !== undefined) {
       filteredUsers = users.filter(
-        (user) => user.profession._id === selectedProf._id
+        (user) => user.profession === selectedProf._id
       );
     } else {
       filteredUsers = users;
