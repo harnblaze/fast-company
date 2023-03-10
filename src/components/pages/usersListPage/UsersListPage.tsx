@@ -21,9 +21,9 @@ import {
   toggleFavoriteCallback,
 } from "../../../types/callbacks";
 import { ISortType } from "../../../types/interfaces";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage: FC = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
   const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
     {}
   );
@@ -40,28 +40,27 @@ const UsersListPage: FC = () => {
       .fetchAll()
       .then((data) => setProfessions(data))
       .catch((e) => console.log(e));
-    api.users
-      .fetchAll()
-      .then((data) => setUsers(data))
-      .catch((e) => console.log(e));
   }, []);
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProf, search]);
+
+  const { users } = useUser();
 
   const handlePageChange: changePageCallback = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
 
   const handleDelete: deleteCallback = (id) => {
-    setUsers((prev) => prev.filter((el) => el._id !== id));
+    console.log(id);
+    // setUsers((prev) => prev.filter((el) => el._id !== id));
   };
 
   const handleToggleFavorite: toggleFavoriteCallback = (id) => {
     const newUsers = [...users];
     const userId = newUsers.findIndex((el) => el._id === id);
     newUsers[userId].bookmark = !newUsers[userId].bookmark;
-    setUsers(newUsers);
+    // setUsers(newUsers);
   };
 
   const handleSearchInput = (value: string): void => {

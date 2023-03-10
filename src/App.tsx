@@ -5,6 +5,7 @@ import Main from "./layouts/Main";
 import Login from "./layouts/Login";
 import Users from "./layouts/Users";
 import NotFound from "./layouts/NotFound";
+import { ToastContainer } from "react-toastify";
 
 const App: FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: FC = () => {
         <Route path="/404" component={NotFound} />
         <Redirect to="/404" />
       </Switch>
+      <ToastContainer />
     </>
   );
 };
