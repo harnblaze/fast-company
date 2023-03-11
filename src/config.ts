@@ -1,5 +1,7 @@
 const config = {
-  apiEndpoint: "http://localhost:4000/api/v1/",
+  apiEndpoint:
+    "https://fast-company-firebase-7ded5-default-rtdb.europe-west1.firebasedatabase.app/",
+  isFireBase: true,
 };
 
 export default config;

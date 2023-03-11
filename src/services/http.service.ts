@@ -1,10 +1,33 @@
 import axios from "axios";
-import config from "../config";
+import configFile from "../config";
 import { toast } from "react-toastify";
 
-axios.defaults.baseURL = config.apiEndpoint;
+axios.defaults.baseURL = configFile.apiEndpoint;
+axios.interceptors.request.use(
+  (config) => {
+    if (configFile.isFireBase) {
+      const containSlash = /\/$/gi.test(config.url ?? "");
+      const url = containSlash ? config.url?.slice(0, -1) : config.url;
+      config.url = `${url ?? ""}.json`;
+    }
+    return config;
+  },
+  async (error) => await Promise.reject(error)
+);
+
+const transformData = (data: any): unknown[] => {
+  return data !== undefined
+    ? Object.keys(data).map((el) => ({ ...data[el] }))
+    : [];
+};
+
 axios.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (configFile.isFireBase) {
+      res.data = { content: transformData(res.data) };
+    }
+    return res;
+  },
   async (error) => {
     const expectedErrors =
       error.response !== undefined &&
