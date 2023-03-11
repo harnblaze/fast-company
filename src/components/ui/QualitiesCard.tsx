@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import Qualities from "./qualities";
-import { IQuality } from "../../api/fake.api/qualities";
 
 interface IQualitiesCardProps {
-  qualities: IQuality[];
+  qualities: string[];
 }
 
 const QualitiesCard: FC<IQualitiesCardProps> = ({ qualities }) => {

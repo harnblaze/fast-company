@@ -3,19 +3,13 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
 
-interface IQuality {
-  _id: string;
-  name: string;
-  color: string;
-}
-
 export interface IUser {
   _id: string;
   name: string;
   email: string;
   sex: string;
   profession: string;
-  qualities: IQuality[];
+  qualities: string[];
   completedMeetings: number;
   rate: number;
   bookmark: boolean;

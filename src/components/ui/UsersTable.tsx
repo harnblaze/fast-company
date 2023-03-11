@@ -37,10 +37,7 @@ const UsersTable: FC<IUsersTableProps> = ({
     },
     profession: {
       name: "Профессия",
-      component: (user) => {
-        console.log(user.profession);
-        return <Profession id={user.profession} />;
-      },
+      component: (user) => <Profession id={user.profession} />,
     },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },

@@ -1,17 +1,19 @@
 import React, { FC } from "react";
 
 import Quality from "./Quality";
-import { IQuality } from "../../../api/fake.api/qualities";
+import { useQuality } from "../../../hooks/useQuality";
 
 interface IQualitiesListProps {
-  qualities: IQuality[];
+  qualities: string[];
 }
 
 const QualitiesList: FC<IQualitiesListProps> = ({ qualities }) => {
+  const { isLoading } = useQuality();
+  if (isLoading) return <>Loading...</>;
   return (
     <>
-      {qualities.map((quality, id) => (
-        <Quality {...quality} key={`${quality._id}_${id}`} />
+      {qualities.map((quality) => (
+        <Quality id={quality} key={quality} />
       ))}
     </>
   );

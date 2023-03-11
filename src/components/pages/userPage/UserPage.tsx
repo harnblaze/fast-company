@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState } from "react";
 import { IUser } from "../../../api/fake.api/user.api";
 import api from "../../../api";
 import UserCard from "../../ui/UserCard";
-import QualitiesCard from "../../ui/QualitiesCard";
 import MeetingsCard from "../../ui/MeetingsCard";
 import CommentsCard from "../../ui/CommentsCard";
 
@@ -27,7 +26,7 @@ const UserPage: FC<IUserPageProps> = ({ id }) => {
         <div className="row gutters-sm">
           <div className="col-md-4 mb-3">
             <UserCard user={user} />
-            <QualitiesCard qualities={user.qualities} />
+            {/* <QualitiesCard qualities={user.qualities} /> */}
             <MeetingsCard meetings={user.completedMeetings} />
           </div>
           <div className="col-md-8">
