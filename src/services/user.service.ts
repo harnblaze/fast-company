@@ -7,7 +7,10 @@ const userService = {
     return data;
   },
   create: async (payload) => {
-    const { data } = await httpService.put(endPoint + payload._id, payload);
+    const { data } = await httpService.put(
+      `${endPoint}${payload._id}`,
+      payload
+    );
     return data;
   },
 };

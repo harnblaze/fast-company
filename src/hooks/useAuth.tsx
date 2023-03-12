@@ -2,6 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
+import { setTokens } from "../services/localStorage.service";
 
 interface IUseAuthType {
   signUp: (data: IUserAuthData) => Promise<void>;
@@ -10,15 +11,6 @@ interface IUseAuthType {
 interface IUserAuthData {
   email: string;
   password: string;
-}
-
-interface IAuthResponse {
-  email: string;
-  expiresIn: string;
-  idToken: string;
-  kind: string;
-  localId: string;
-  refreshToken: string;
 }
 
 const httpAuth = axios.create();
@@ -36,12 +28,6 @@ interface IUserProviderProps {
   children: React.ReactNode;
 }
 
-enum JWT_CONST {
-  TOKEN = "jwt_token",
-  REFRESH_TOKEN = "jwt_refresh_token",
-  EXPIRES = "jwt_expires",
-}
-
 const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(null);
@@ -53,17 +39,6 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     }
   }, [error]);
 
-  const setTokens = ({
-    refreshToken,
-    expiresIn = "3600",
-    idToken,
-  }: IAuthResponse): void => {
-    const expiresDate = new Date().getTime() + Number(expiresIn) * 1000;
-    localStorage.setItem(JWT_CONST.TOKEN, idToken);
-    localStorage.setItem(JWT_CONST.REFRESH_TOKEN, refreshToken);
-    localStorage.setItem(JWT_CONST.EXPIRES, expiresDate.toString());
-  };
-
   const errorCatcher = (error: any): void => {
     const { message } = error.response.data;
     setError(message);
@@ -74,8 +49,9 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     password,
     ...rest
   }: IUserAuthData): Promise<void> => {
-    const key = "AIzaSyBH6W1sjEx0OVUKxCaJhN-mmTSFHrQD8iY";
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`;
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${
+      process.env.REACT_APP_FIREBASE_KEY ?? ""
+    }`;
     try {
       const { data } = await httpAuth.post(url, {
         email,
