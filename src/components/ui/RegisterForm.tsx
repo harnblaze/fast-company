@@ -13,6 +13,7 @@ import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
 import { useProfession } from "../../hooks/useProfessions";
 import { useQuality } from "../../hooks/useQuality";
+import { useAuth } from "../../hooks/useAuth";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -25,6 +26,7 @@ const RegisterForm: FC = () => {
   });
   const { qualities } = useQuality();
   const { professions } = useProfession();
+  const { signUp } = useAuth();
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -53,7 +55,7 @@ const RegisterForm: FC = () => {
     const isValid = validate();
     if (!isValid) return;
     const newData = { ...data, qualities: data.qualities.map((q) => q.value) };
-    console.log(newData);
+    void signUp(newData);
   };
 
   const isValid = Object.values(errors).every((el) => el === "");

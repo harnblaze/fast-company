@@ -1,24 +1,21 @@
 import React, { FC, useContext } from "react";
+import axios from "axios";
 
-export interface IUser {
-  _id: string;
-  name: string;
+interface IUseAuthType {
+  signUp: (data: IUserAuthData) => Promise<void> | null;
+}
+interface IUserAuthData {
   email: string;
-  sex: string;
-  profession: string;
-  qualities: string[];
-  completedMeetings: number;
-  rate: number;
-  bookmark: boolean;
+  password: string;
 }
 
-interface UseAuthType {
-  users: IUser[] | [];
-}
+const httpAuth = axios.create();
 
-const AuthContext = React.createContext<UseAuthType>({ users: [] });
+const AuthContext = React.createContext<IUseAuthType>({
+  signUp: async () => undefined,
+});
 
-export const useAuth = (): UseAuthType => {
+export const useAuth = (): IUseAuthType => {
   return useContext(AuthContext);
 };
 
@@ -26,10 +23,19 @@ interface IUserProviderProps {
   children: React.ReactNode;
 }
 const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
+  const signUp = async ({ email, password }: IUserAuthData): Promise<void> => {
+    const key = "AIzaSyBH6W1sjEx0OVUKxCaJhN-mmTSFHrQD8iY";
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`;
+    const { data } = await httpAuth.post(url, {
+      email,
+      password,
+      returnSecureToken: true,
+    });
+    console.log(data);
+  };
+
   return (
-    <AuthContext.Provider value={{ users: [] }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ signUp }}>{children}</AuthContext.Provider>
   );
 };
 export default AuthProvider;
