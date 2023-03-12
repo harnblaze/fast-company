@@ -14,6 +14,7 @@ import CheckboxField from "../common/form/checkboxField";
 import { useProfession } from "../../hooks/useProfessions";
 import { useQuality } from "../../hooks/useQuality";
 import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -34,6 +35,7 @@ const RegisterForm: FC = () => {
     qualities: "",
     license: "",
   });
+  const history = useHistory();
 
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
@@ -50,12 +52,18 @@ const RegisterForm: FC = () => {
     return Object.values(errors).every((el) => el === "");
   };
 
-  const handleSubmit = (event: React.FormEvent): void => {
+  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
     const newData = { ...data, qualities: data.qualities.map((q) => q.value) };
-    void signUp(newData);
+    try {
+      await signUp(newData);
+      history.push("/");
+    } catch (error: any) {
+      setErrors(error);
+      console.log(error);
+    }
   };
 
   const isValid = Object.values(errors).every((el) => el === "");
@@ -65,7 +73,11 @@ const RegisterForm: FC = () => {
   }));
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
+    >
       <TextField
         label="Электронная почта"
         name="email"
