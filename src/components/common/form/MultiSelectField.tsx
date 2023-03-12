@@ -6,7 +6,7 @@ import { onFormFieldChangeCallback } from "../../../types/callbacks";
 interface MultiSelectFieldProps {
   label: string;
   name: string;
-  options: IQualities;
+  options: IQualities | Array<{ label: string; value: string }>;
   onChange: onFormFieldChangeCallback;
   error?: string;
   defaultValue: any[];

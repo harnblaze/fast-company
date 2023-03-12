@@ -44,9 +44,9 @@ const SelectField: FC<selectFieldProps> = ({
         <option disabled value="">
           {defaultOption}
         </option>
-        {options.map((profession) => (
-          <option key={profession._id} value={profession._id}>
-            {profession.name}
+        {options.map((option) => (
+          <option key={option._id} value={option._id}>
+            {option.name}
           </option>
         ))}
       </select>

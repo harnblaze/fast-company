@@ -6,14 +6,13 @@ import {
   dataRegisterState,
   errorRegisterState,
 } from "../../types/validatorTypes";
-import { IProfession } from "../../api/fake.api/professions.api";
-import api from "../../api";
 import SelectField from "../common/form/SelectField";
 import RadioField from "../common/form/RadioField";
-import { IQualities } from "../../api/fake.api/qualities";
 import MultiSelectField from "../common/form/MultiSelectField";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
+import { useProfession } from "../../hooks/useProfessions";
+import { useQuality } from "../../hooks/useQuality";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -24,8 +23,8 @@ const RegisterForm: FC = () => {
     qualities: [],
     license: false,
   });
-  const [qualities, setQualities] = useState<IQualities>({});
-  const [professions, setProfessions] = useState<IProfession[]>([]);
+  const { qualities } = useQuality();
+  const { professions } = useProfession();
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -37,17 +36,6 @@ const RegisterForm: FC = () => {
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
-
-  useEffect(() => {
-    api.professions
-      .fetchAll()
-      .then((data) => setProfessions(data))
-      .catch((e) => console.log(e));
-    api.qualities
-      .fetchAll()
-      .then((data) => setQualities(data))
-      .catch((e) => console.log(e));
-  }, []);
 
   useEffect(() => {
     validate();
@@ -64,10 +52,15 @@ const RegisterForm: FC = () => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    const newData = { ...data, qualities: data.qualities.map((q) => q.value) };
+    console.log(newData);
   };
 
   const isValid = Object.values(errors).every((el) => el === "");
+  const qualitiesList = qualities.map((quality) => ({
+    label: quality.name,
+    value: quality._id,
+  }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -109,7 +102,7 @@ const RegisterForm: FC = () => {
       <MultiSelectField
         error={errors.qualities}
         label="Выберите ваши качества"
-        options={qualities}
+        options={qualitiesList}
         onChange={handleChange}
         name="qualities"
         defaultValue={data.qualities}

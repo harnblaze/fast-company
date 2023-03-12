@@ -3,7 +3,6 @@ import {
   validatorConfigCommentForm,
   validatorConfigEditPage,
 } from "../utils/validator";
-import { IQuality } from "../api/fake.api/qualities";
 
 export interface dataLoginState {
   email: string;
@@ -21,7 +20,7 @@ export interface dataRegisterState {
   ["password"]: string;
   ["profession"]: string;
   ["gender"]: string;
-  ["qualities"]: IQuality[];
+  ["qualities"]: Array<{ label: string; value: string }>;
   ["license"]: boolean;
 }
 
