@@ -8,23 +8,26 @@ import NotFound from "./layouts/NotFound";
 import { ToastContainer } from "react-toastify";
 import ProfessionProvider from "./hooks/useProfessions";
 import QualityProvider from "./hooks/useQuality";
+import AuthProvider from "./hooks/useAuth";
 
 const App: FC = () => {
   return (
     <>
-      <Navbar />
-      <ProfessionProvider>
-        <QualityProvider>
-          <Switch>
-            <Route path="/" exact component={Main} />
-            <Route path="/login:type?" component={Login} />
-            <Route path="/users/:userId?/:edit?" component={Users} />
+      <AuthProvider>
+        <Navbar />
+        <ProfessionProvider>
+          <QualityProvider>
+            <Switch>
+              <Route path="/" exact component={Main} />
+              <Route path="/login:type?" component={Login} />
+              <Route path="/users/:userId?/:edit?" component={Users} />
 
-            <Route path="/404" component={NotFound} />
-            <Redirect to="/404" />
-          </Switch>
-        </QualityProvider>
-      </ProfessionProvider>
+              <Route path="/404" component={NotFound} />
+              <Redirect to="/404" />
+            </Switch>
+          </QualityProvider>
+        </ProfessionProvider>
+      </AuthProvider>
       <ToastContainer />
     </>
   );
