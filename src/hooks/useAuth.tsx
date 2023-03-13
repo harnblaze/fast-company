@@ -7,11 +7,13 @@ import localStorageService, {
   ISignUpResponse,
   setTokens,
 } from "../services/localStorage.service";
+import { IUser } from "./useUsers";
 
 interface IUseAuthType {
   signUp: (data: ISignUpData) => Promise<void>;
   createUser: (data: ICreateUserData) => Promise<void>;
   signIn: (data: ISignInData) => Promise<void>;
+  currentUser: IUser | undefined;
 }
 interface ISignUpData {
   email: string;
@@ -49,6 +51,7 @@ const AuthContext = React.createContext<IUseAuthType>({
   signUp: async () => undefined,
   createUser: async () => undefined,
   signIn: async () => undefined,
+  currentUser: undefined,
 });
 
 export const useAuth = (): IUseAuthType => {
@@ -60,7 +63,7 @@ interface IUserProviderProps {
 }
 
 const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
-  const [, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -174,7 +177,7 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signUp, createUser, signIn }}>
+    <AuthContext.Provider value={{ signUp, createUser, signIn, currentUser }}>
       {children}
     </AuthContext.Provider>
   );
