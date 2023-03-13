@@ -18,6 +18,7 @@ import { useHistory } from "react-router-dom";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
+    name: "",
     email: "",
     password: "",
     profession: "",
@@ -29,6 +30,7 @@ const RegisterForm: FC = () => {
   const { professions } = useProfession();
   const { signUp } = useAuth();
   const [errors, setErrors] = useState({
+    name: "",
     email: "",
     password: "",
     profession: "",
@@ -78,6 +80,13 @@ const RegisterForm: FC = () => {
         void handleSubmit(e);
       }}
     >
+      <TextField
+        label="Имя"
+        name="name"
+        value={data.name}
+        onChange={handleChange}
+        error={errors.name}
+      />
       <TextField
         label="Электронная почта"
         name="email"

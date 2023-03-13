@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
-import {
+import localStorageService, {
   ISignInResponse,
   ISignUpResponse,
   setTokens,
@@ -34,6 +34,8 @@ export interface ICreateUserData {
   license: boolean;
   profession: string;
   qualities: string[];
+  rate: number;
+  completedMeetings: number;
 }
 
 const httpAuth = axios.create({
@@ -62,6 +64,11 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (localStorageService.getAccessToken() !== undefined) {
+      void getUserData();
+    }
+  }, []);
+  useEffect(() => {
     if (error !== null) {
       toast.error(error);
       setError(null);
@@ -71,6 +78,17 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   const errorCatcher = (error: any): void => {
     const { message } = error.response.data;
     setError(message);
+  };
+  const getRandomInt = (min: number, max: number): number =>
+    Math.floor(Math.random() * (max - min + 1) + min);
+
+  const getUserData = async (): Promise<void> => {
+    try {
+      const { content } = await userService.getCurrentUser();
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    }
   };
 
   const signUp = async ({
@@ -87,7 +105,12 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
       });
 
       setTokens(data);
-      await createUser({ _id: data.localId, ...rest });
+      await createUser({
+        _id: data.localId,
+        rate: getRandomInt(1, 10),
+        completedMeetings: getRandomInt(0, 200),
+        ...rest,
+      });
     } catch (error: any) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -114,21 +137,21 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
         returnSecureToken: true,
       });
       setTokens(data);
-      console.log(data);
+      await getUserData();
     } catch (error: any) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
         if (message === "EMAIL_NOT_FOUND") {
           throw Object.assign(new Error(message), {
-            email: "Пользователь с таким email не существует",
-            password: "",
+            email: "Email или пароль не верный",
+            password: "Email или пароль не верный",
           });
         }
         if (message === "INVALID_PASSWORD") {
           throw Object.assign(new Error(message), {
-            email: "",
-            password: "Пароль не верный",
+            email: "Email или пароль не верный",
+            password: "Email или пароль не верный",
           });
         }
         if (message === "USER_DISABLED") {

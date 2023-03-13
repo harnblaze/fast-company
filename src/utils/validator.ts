@@ -10,6 +10,14 @@ import {
 import { IQuality } from "../api/fake.api/qualities";
 
 export const validatorConfig = {
+  name: {
+    isRequired: {
+      message: "Имя обязательно для заполнения",
+    },
+    isMinNameSymbol: {
+      message: "Имя должен состоять минимум из трех символов",
+    },
+  },
   email: {
     isRequired: {
       message: "Электронная почта обязательна для заполнения",
@@ -59,6 +67,9 @@ export const validatorConfigEditPage = {
     },
   },
   name: {
+    isRequired: {
+      message: "Имя обязательно для заполнения",
+    },
     isMinNameSymbol: {
       message: "Имя должен состоять минимум из трех символов",
     },

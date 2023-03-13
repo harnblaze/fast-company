@@ -1,5 +1,6 @@
 import httpService from "./http.service";
 import { ICreateUserData } from "../hooks/useAuth";
+import localStorageService from "./localStorage.service";
 
 const endPoint = "user/";
 const userService = {
@@ -11,6 +12,12 @@ const userService = {
     const { data } = await httpService.put(
       `${endPoint}${payload._id}`,
       payload
+    );
+    return data;
+  },
+  getCurrentUser: async () => {
+    const { data } = await httpService.get(
+      endPoint + localStorageService.getUserID()
     );
     return data;
   },

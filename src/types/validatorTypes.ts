@@ -16,6 +16,7 @@ export interface errorLoginState {
 }
 
 export interface dataRegisterState {
+  ["name"]: string;
   ["email"]: string;
   ["password"]: string;
   ["profession"]: string;
@@ -31,6 +32,7 @@ export interface IQualitiesData {
 }
 
 export interface errorRegisterState {
+  name: string;
   email: string;
   password: string;
   profession: string;
