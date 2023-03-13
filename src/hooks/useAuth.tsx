@@ -2,11 +2,16 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
-import { IAuthResponse, setTokens } from "../services/localStorage.service";
+import {
+  ISignInResponse,
+  ISignUpResponse,
+  setTokens,
+} from "../services/localStorage.service";
 
 interface IUseAuthType {
   signUp: (data: ISignUpData) => Promise<void>;
   createUser: (data: ICreateUserData) => Promise<void>;
+  signIn: (data: ISignInData) => Promise<void>;
 }
 interface ISignUpData {
   email: string;
@@ -17,6 +22,12 @@ interface ISignUpData {
   qualities: string[];
 }
 
+interface ISignInData {
+  email: string;
+  password: string;
+  stayOn: boolean;
+}
+
 export interface ICreateUserData {
   _id: string;
   gender: string;
@@ -25,11 +36,17 @@ export interface ICreateUserData {
   qualities: string[];
 }
 
-const httpAuth = axios.create();
+const httpAuth = axios.create({
+  baseURL: "https://identitytoolkit.googleapis.com/v1",
+  params: {
+    key: process.env.REACT_APP_FIREBASE_KEY,
+  },
+});
 
 const AuthContext = React.createContext<IUseAuthType>({
   signUp: async () => undefined,
   createUser: async () => undefined,
+  signIn: async () => undefined,
 });
 
 export const useAuth = (): IUseAuthType => {
@@ -61,11 +78,9 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     password,
     ...rest
   }: ISignUpData): Promise<void> => {
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${
-      process.env.REACT_APP_FIREBASE_KEY ?? ""
-    }`;
+    const url = `accounts:signUp`;
     try {
-      const { data } = await httpAuth.post<IAuthResponse>(url, {
+      const { data } = await httpAuth.post<ISignUpResponse>(url, {
         email,
         password,
         returnSecureToken: true,
@@ -76,7 +91,6 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     } catch (error: any) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
-      console.log(code, message);
       if (code === 400) {
         if (message === "EMAIL_EXISTS") {
           throw Object.assign(new Error(message), {
@@ -85,6 +99,42 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
             profession: "",
             qualities: "",
             license: "",
+          });
+        }
+      }
+    }
+  };
+
+  const signIn = async ({ email, password }: ISignInData): Promise<void> => {
+    const url = `accounts:signInWithPassword`;
+    try {
+      const { data } = await httpAuth.post<ISignInResponse>(url, {
+        email,
+        password,
+        returnSecureToken: true,
+      });
+      setTokens(data);
+      console.log(data);
+    } catch (error: any) {
+      errorCatcher(error);
+      const { code, message } = error.response.data.error;
+      if (code === 400) {
+        if (message === "EMAIL_NOT_FOUND") {
+          throw Object.assign(new Error(message), {
+            email: "Пользователь с таким email не существует",
+            password: "",
+          });
+        }
+        if (message === "INVALID_PASSWORD") {
+          throw Object.assign(new Error(message), {
+            email: "",
+            password: "Пароль не верный",
+          });
+        }
+        if (message === "USER_DISABLED") {
+          throw Object.assign(new Error(message), {
+            email: "Учетная запись пользователя отключена администратором.",
+            password: "",
           });
         }
       }
@@ -101,7 +151,7 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signUp, createUser }}>
+    <AuthContext.Provider value={{ signUp, createUser, signIn }}>
       {children}
     </AuthContext.Provider>
   );

@@ -4,6 +4,8 @@ import TextField from "../common/form/TextField";
 import { dataLoginState, errorLoginState } from "../../types/validatorTypes";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const LoginForm: FC = () => {
   const [data, setData] = useState<dataLoginState>({
@@ -15,6 +17,8 @@ const LoginForm: FC = () => {
     email: "",
     password: "",
   });
+  const history = useHistory();
+  const { signIn } = useAuth();
 
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
@@ -31,17 +35,28 @@ const LoginForm: FC = () => {
     return Object.values(errors).every((el) => el === "");
   };
 
-  const handleSubmit = (event: React.FormEvent): void => {
+  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+
+    try {
+      await signIn(data);
+      history.push("/");
+    } catch (error: any) {
+      setErrors(error);
+      console.log(error);
+    }
   };
 
   const isValid = Object.values(errors).every((el) => el === "");
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
+    >
       <TextField
         label="Электронная почта"
         name="email"
