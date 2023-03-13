@@ -65,10 +65,13 @@ interface IUserProviderProps {
 const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (localStorageService.getAccessToken() !== undefined) {
       void getUserData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
   useEffect(() => {
@@ -91,6 +94,8 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -178,7 +183,7 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ signUp, createUser, signIn, currentUser }}>
-      {children}
+      {isLoading !== undefined ? children : "Loading..."}
     </AuthContext.Provider>
   );
 };
