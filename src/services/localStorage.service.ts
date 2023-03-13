@@ -1,8 +1,8 @@
 export interface ISignUpResponse {
-  email: string;
+  email?: string;
   expiresIn: string;
   idToken: string;
-  kind: string;
+  kind?: string;
   localId: string;
   refreshToken: string;
 }
