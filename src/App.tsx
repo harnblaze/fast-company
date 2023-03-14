@@ -10,6 +10,7 @@ import ProfessionProvider from "./hooks/useProfessions";
 import QualityProvider from "./hooks/useQuality";
 import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import LogOut from "./layouts/LogOut";
 
 const App: FC = () => {
   return (
@@ -22,7 +23,7 @@ const App: FC = () => {
               <ProtectedRoute path="/users/:userId?/:edit?" component={Users} />
               <Route path="/" exact component={Main} />
               <Route path="/login:type?" component={Login} />
-
+              <Route path="/logout" component={LogOut} />
               <Route path="/404" component={NotFound} />
               <Redirect to="/404" />
             </Switch>

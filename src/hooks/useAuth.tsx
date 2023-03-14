@@ -8,11 +8,13 @@ import localStorageService, {
   setTokens,
 } from "../services/localStorage.service";
 import { IUser } from "./useUsers";
+import { useHistory } from "react-router-dom";
 
 interface IUseAuthType {
   signUp: (data: ISignUpData) => Promise<void>;
   createUser: (data: ICreateUserData) => Promise<void>;
   signIn: (data: ISignInData) => Promise<void>;
+  logOut: () => void;
   currentUser: IUser | undefined;
 }
 interface ISignUpData {
@@ -51,6 +53,7 @@ const AuthContext = React.createContext<IUseAuthType>({
   signUp: async () => undefined,
   createUser: async () => undefined,
   signIn: async () => undefined,
+  logOut: () => undefined,
   currentUser: undefined,
 });
 
@@ -66,6 +69,7 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
     if (localStorageService.getAccessToken() !== undefined) {
@@ -172,6 +176,12 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     }
   };
 
+  const logOut = (): void => {
+    localStorageService.removeAuthData();
+    setCurrentUser(undefined);
+    history.push("/");
+  };
+
   const createUser = async (data: ICreateUserData): Promise<void> => {
     try {
       const { content } = await userService.create(data);
@@ -182,7 +192,9 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signUp, createUser, signIn, currentUser }}>
+    <AuthContext.Provider
+      value={{ signUp, createUser, signIn, logOut, currentUser }}
+    >
       {isLoading !== undefined ? children : "Loading..."}
     </AuthContext.Provider>
   );

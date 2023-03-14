@@ -49,6 +49,12 @@ export const getExpires = (): string => {
 export const getUserID = (): string => {
   return localStorage.getItem(JWT_CONST.USER_ID) ?? "";
 };
+export const removeAuthData = (): void => {
+  localStorage.setItem(JWT_CONST.TOKEN, "");
+  localStorage.setItem(JWT_CONST.REFRESH_TOKEN, "");
+  localStorage.setItem(JWT_CONST.EXPIRES, "");
+  localStorage.setItem(JWT_CONST.USER_ID, "");
+};
 
 const localStorageService = {
   setTokens,
@@ -56,6 +62,7 @@ const localStorageService = {
   getAccessToken,
   getRefreshToken,
   getUserID,
+  removeAuthData,
 };
 
 export default localStorageService;
