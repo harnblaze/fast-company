@@ -17,7 +17,7 @@ const LoginForm: FC = () => {
     email: "",
     password: "",
   });
-  const history = useHistory();
+  const history = useHistory<any>();
   const { signIn } = useAuth();
 
   const handleChange: onFormFieldChangeCallback = (target) => {
@@ -42,7 +42,11 @@ const LoginForm: FC = () => {
 
     try {
       await signIn(data);
-      history.push("/");
+      history.push(
+        history.location.state.from.pathname !== undefined
+          ? history.location.state.from.pathname
+          : "/"
+      );
     } catch (error: any) {
       setErrors(error);
       console.log(error);

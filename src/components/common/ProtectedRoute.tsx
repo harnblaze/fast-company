@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 
 interface IProtectedRuteProps {
@@ -18,12 +18,17 @@ const ProtectedRoute: FC<IProtectedRuteProps> = ({
   ...rest
 }) => {
   const { currentUser } = useAuth();
+  const history = useHistory();
   return (
     <Route
       {...rest}
       render={(props) => {
         if (currentUser === undefined) {
-          return <Redirect to={"/login"} />;
+          return (
+            <Redirect
+              to={{ pathname: "/login", state: { from: history.location } }}
+            />
+          );
         }
         return Component !== undefined ? <Component {...props} /> : children;
       }}
