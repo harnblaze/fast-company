@@ -4,6 +4,7 @@ import MeetingsCard from "../../ui/MeetingsCard";
 import CommentsCard from "../../ui/CommentsCard";
 import { useUser } from "../../../hooks/useUsers";
 import QualitiesCard from "../../ui/QualitiesCard";
+import CommentsProvider from "../../../hooks/useComments";
 
 interface IUserPageProps {
   id: string;
@@ -22,7 +23,9 @@ const UserPage: FC<IUserPageProps> = ({ id }) => {
             <MeetingsCard meetings={user.completedMeetings} />
           </div>
           <div className="col-md-8">
-            <CommentsCard />
+            <CommentsProvider>
+              <CommentsCard />
+            </CommentsProvider>
           </div>
         </div>
       </div>

@@ -60,12 +60,10 @@ export interface errorEditPage {
 }
 
 export interface dataCommentForm {
-  userId: string;
   content: string;
 }
 
 export interface errorCommentForm {
-  userId: string;
   content: string;
 }
 

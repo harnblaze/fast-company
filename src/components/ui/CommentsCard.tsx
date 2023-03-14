@@ -6,9 +6,11 @@ import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/AddCommentForm";
 import CommentsList from "../common/comments/CommentsList";
 import { dataCommentForm } from "../../types/validatorTypes";
+import { useComments } from "../../hooks/useComments";
 
 const CommentsCard: FC = () => {
   const { userId } = useParams<{ userId: string }>();
+  const { createComment } = useComments();
   const [comments, setComments] = useState<IComment[]>([]);
 
   useEffect(() => {
@@ -19,10 +21,11 @@ const CommentsCard: FC = () => {
   }, []);
 
   const handleSubmit = (data: dataCommentForm): void => {
-    void api.comments
-      .add({ ...data, pageId: userId })
-      .then((data) => setComments([...comments, { ...data, pageId: userId }]))
-      .catch((e) => console.log(e));
+    // void api.comments
+    //   .add({ ...data, pageId: userId })
+    //   .then((data) => setComments([...comments, { ...data, pageId: userId }]))
+    //   .catch((e) => console.log(e));
+    void createComment(data);
   };
   const handleRemoveComment = (id: string): void => {
     void api.comments

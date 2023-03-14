@@ -114,7 +114,6 @@ export const validator = (
     qualities: "",
     license: "",
     name: "",
-    userId: "",
     content: "",
   };
 
