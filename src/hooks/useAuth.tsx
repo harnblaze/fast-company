@@ -35,6 +35,7 @@ interface ISignInData {
 export interface ICreateUserData {
   _id: string;
   gender: string;
+  image: string;
   license: boolean;
   profession: string;
   qualities: string[];
@@ -121,6 +122,9 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
         _id: data.localId,
         rate: getRandomInt(1, 10),
         completedMeetings: getRandomInt(0, 200),
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+          .toString(36)
+          .substring(7)}.svg`,
         ...rest,
       });
     } catch (error: any) {

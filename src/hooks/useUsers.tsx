@@ -8,6 +8,7 @@ export interface IUser {
   name: string;
   email: string;
   sex: string;
+  image: string;
   profession: string;
   qualities: string[];
   completedMeetings: number;
@@ -17,9 +18,13 @@ export interface IUser {
 
 interface UseUserType {
   users: IUser[];
+  getUserById: (id: string) => IUser | undefined;
 }
 
-const UserContext = React.createContext<UseUserType>({ users: [] });
+const UserContext = React.createContext<UseUserType>({
+  users: [],
+  getUserById: () => undefined,
+});
 
 export const useUser = (): UseUserType => {
   return useContext(UserContext);
@@ -47,6 +52,11 @@ const UserProvider: FC<IUserProviderProps> = ({ children }) => {
       errorCatcher(error);
     }
   };
+
+  const getUserById = (id: string): IUser | undefined => {
+    return users.find((user) => user._id === id);
+  };
+
   useEffect(() => {
     void getUsers();
   }, []);
@@ -58,7 +68,7 @@ const UserProvider: FC<IUserProviderProps> = ({ children }) => {
   }, [error]);
 
   return (
-    <UserContext.Provider value={{ users }}>
+    <UserContext.Provider value={{ users, getUserById }}>
       {!isLoading ? children : "Loading"}
     </UserContext.Provider>
   );

@@ -1,6 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-
-import api from "../../../api";
 import _ from "lodash";
 import { paginate } from "../../../utils/paginate";
 
@@ -9,23 +7,21 @@ import Pagination from "../../common/Pagination";
 import GroupList from "../../common/GroupList";
 import UsersTable from "../../ui/UsersTable";
 
-import {
-  IProfession,
-  IProfessions,
-} from "../../../api/fake.api/professions.api";
+import { IProfession } from "../../../api/fake.api/professions.api";
 import { IUser, useUser } from "../../../hooks/useUsers";
 import {
   changePageCallback,
-  deleteCallback,
   onItemsSelectCallback,
   toggleFavoriteCallback,
 } from "../../../types/callbacks";
 import { ISortType } from "../../../types/interfaces";
+import { useProfession } from "../../../hooks/useProfessions";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UsersListPage: FC = () => {
-  const [professions, setProfessions] = useState<IProfessions | IProfession[]>(
-    {}
-  );
+  const { users } = useUser();
+  const { currentUser } = useAuth();
+  const { professions, isLoading: professionsLoading } = useProfession();
   const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState<IProfession | undefined>();
@@ -33,26 +29,14 @@ const UsersListPage: FC = () => {
     path: "name",
     order: "asc",
   });
+  const pageSize = 8;
 
-  useEffect(() => {
-    api.professions
-      .fetchAll()
-      .then((data) => setProfessions(data))
-      .catch((e) => console.log(e));
-  }, []);
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProf, search]);
 
-  const { users } = useUser();
-
   const handlePageChange: changePageCallback = (pageIndex) => {
     setCurrentPage(pageIndex);
-  };
-
-  const handleDelete: deleteCallback = (id) => {
-    console.log(id);
-    // setUsers((prev) => prev.filter((el) => el._id !== id));
   };
 
   const handleToggleFavorite: toggleFavoriteCallback = (id) => {
@@ -79,27 +63,32 @@ const UsersListPage: FC = () => {
   const handleSortClick = (item: ISortType): void => {
     setSortBy(item);
   };
-  if (users.length !== 0) {
-    const pageSize = 8;
-    let filteredUsers: IUser[];
-    if (search !== "") {
-      filteredUsers = users.filter((user) =>
-        user.name.toLowerCase().includes(search.toLowerCase())
-      );
-    } else if (selectedProf !== undefined) {
-      filteredUsers = users.filter(
-        (user) => user.profession === selectedProf._id
-      );
-    } else {
-      filteredUsers = users;
+
+  const filterUsers = (data: IUser[]): IUser[] | undefined => {
+    let filteredUsers;
+    if (data.length !== 0) {
+      if (search !== "") {
+        filteredUsers = data.filter((user) =>
+          user.name.toLowerCase().includes(search.toLowerCase())
+        );
+      } else if (selectedProf !== undefined) {
+        filteredUsers = data.filter(
+          (user) => user.profession === selectedProf._id
+        );
+      } else {
+        filteredUsers = data;
+      }
     }
+    return filteredUsers?.filter((el) => el._id !== currentUser?._id);
+  };
+  const filteredUsers = filterUsers(users);
+  const count = filteredUsers?.length ?? 1;
+  const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+  const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
-    const count = filteredUsers.length;
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-    const userCrop = paginate(sortedUsers, currentPage, pageSize);
-
-    return (
-      <div className="d-flex">
+  return (
+    <div className="d-flex">
+      {professions.length !== 0 && !professionsLoading && (
         <div className="d-flex flex-column flex-shrink-0 p-3">
           <GroupList
             items={professions}
@@ -110,34 +99,34 @@ const UsersListPage: FC = () => {
             Очистить
           </button>
         </div>
-        <div className="d-flex flex-column flex-grow-1">
-          <SearchStatus length={count} />
-          <input
-            type="text"
-            name="search"
-            placeholder="Search..."
-            value={search}
-            onChange={(evt) => handleSearchInput(evt.target.value)}
+      )}
+
+      <div className="d-flex flex-column flex-grow-1">
+        <SearchStatus length={count} />
+        <input
+          type="text"
+          name="search"
+          placeholder="Search..."
+          value={search}
+          onChange={(evt) => handleSearchInput(evt.target.value)}
+        />
+        <UsersTable
+          users={userCrop}
+          handleToggleFavorite={handleToggleFavorite}
+          selectedSort={sortBy}
+          onSort={handleSortClick}
+        />
+        <div className="d-flex justify-content-center">
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
           />
-          <UsersTable
-            users={userCrop}
-            handleDelete={handleDelete}
-            handleToggleFavorite={handleToggleFavorite}
-            selectedSort={sortBy}
-            onSort={handleSortClick}
-          />
-          <div className="d-flex justify-content-center">
-            <Pagination
-              itemsCount={count}
-              pageSize={pageSize}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </div>
         </div>
       </div>
-    );
-  } else return <div>loading...</div>;
+    </div>
+  );
 };
 
 export default UsersListPage;

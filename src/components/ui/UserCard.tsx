@@ -1,6 +1,9 @@
 import React, { FC } from "react";
-import { IUser } from "../../api/fake.api/user.api";
+
 import { useHistory } from "react-router-dom";
+import { IUser } from "../../hooks/useUsers";
+import { useProfession } from "../../hooks/useProfessions";
+import { useAuth } from "../../hooks/useAuth";
 
 interface IUserCardProps {
   user: IUser;
@@ -8,33 +11,38 @@ interface IUserCardProps {
 
 const UserCard: FC<IUserCardProps> = ({ user }) => {
   const history = useHistory();
+  const { currentUser } = useAuth();
+  const { getProfession } = useProfession();
+
+  const profession = getProfession(user.profession);
+
   const handleClickEdit = (): void => {
     history.push(history.location.pathname + "/edit");
   };
-
   return (
     <div className="card mb-3">
       <div className="card-body">
-        <button
-          className="position-absolute top-0 end-0 btn btn-light btn-sm"
-          onClick={handleClickEdit}
-        >
-          <i className="bi bi-gear"></i>
-        </button>
+        {currentUser?._id === user._id ? (
+          <button
+            className="position-absolute top-0 end-0 btn btn-light btn-sm"
+            onClick={handleClickEdit}
+          >
+            <i className="bi bi-gear"></i>
+          </button>
+        ) : (
+          ""
+        )}
+
         <div className="d-flex flex-column align-items-center text-center position-relative">
           <img
-            src={`https://avatars.dicebear.com/api/avataaars/${(
-              Math.random() + 1
-            )
-              .toString(36)
-              .substring(7)}.svg`}
+            src={user.image}
             className="rounded-circle"
             alt="avatar"
             width="150"
           />
           <div className="mt-3">
             <h4>{user.name}</h4>
-            <p className="text-secondary mb-1">{user.profession.name}</p>
+            <p className="text-secondary mb-1">{profession?.name}</p>
             <div className="text-muted">
               <i
                 className="bi bi-caret-down-fill text-primary"

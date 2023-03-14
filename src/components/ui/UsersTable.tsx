@@ -12,7 +12,6 @@ import Profession from "./Profession";
 
 interface IUsersTableProps {
   users: IUser[];
-  handleDelete: (id: string) => void;
   handleToggleFavorite: (id: string) => void;
   selectedSort: ISortType;
   onSort: (name: ISortType) => void;
@@ -20,7 +19,6 @@ interface IUsersTableProps {
 
 const UsersTable: FC<IUsersTableProps> = ({
   users,
-  handleDelete,
   handleToggleFavorite,
   selectedSort,
   onSort,
@@ -50,17 +48,6 @@ const UsersTable: FC<IUsersTableProps> = ({
           _id={user._id}
           handleToggleFavorite={handleToggleFavorite}
         />
-      ),
-    },
-    delete: {
-      component: (user) => (
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={() => handleDelete(user._id)}
-        >
-          Delete
-        </button>
       ),
     },
   };
