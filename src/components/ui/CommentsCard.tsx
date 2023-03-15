@@ -1,7 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { IComment } from "../../api/fake.api/comments";
-import api from "../../api";
+import React, { FC } from "react";
 import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/AddCommentForm";
 import CommentsList from "../common/comments/CommentsList";
@@ -9,16 +6,7 @@ import { dataCommentForm } from "../../types/validatorTypes";
 import { useComments } from "../../hooks/useComments";
 
 const CommentsCard: FC = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const { createComment } = useComments();
-  const [comments, setComments] = useState<IComment[]>([]);
-
-  useEffect(() => {
-    api.comments
-      .fetchCommentsForUser(userId)
-      .then((data) => setComments(data))
-      .catch((e) => console.log(e));
-  }, []);
+  const { comments, createComment, removeComment } = useComments();
 
   const handleSubmit = (data: dataCommentForm): void => {
     // void api.comments
@@ -28,12 +16,13 @@ const CommentsCard: FC = () => {
     void createComment(data);
   };
   const handleRemoveComment = (id: string): void => {
-    void api.comments
-      .remove(id)
-      .then((id) => {
-        setComments(comments.filter((x) => x._id !== id));
-      })
-      .catch((e) => console.log(e));
+    // void api.comments
+    //   .remove(id)
+    //   .then((id) => {
+    //     setComments(comments.filter((x) => x._id !== id));
+    //   })
+    //   .catch((e) => console.log(e));
+    void removeComment(id);
   };
 
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);

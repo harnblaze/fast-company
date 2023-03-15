@@ -12,6 +12,8 @@ import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import LogOut from "./layouts/LogOut";
 
+import "react-toastify/dist/ReactToastify.css";
+
 const App: FC = () => {
   return (
     <>

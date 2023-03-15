@@ -11,12 +11,16 @@ interface UseCommentsType {
   comments: IComment[];
   isLoading: boolean;
   createComment: (data: any) => Promise<void>;
+  getComments: (pageID: string) => Promise<void>;
+  removeComment: (id: string) => Promise<void>;
 }
 
 const CommentsContext = React.createContext<UseCommentsType>({
   comments: [],
   isLoading: true,
-  createComment: async (data: any) => undefined,
+  createComment: async (data) => undefined,
+  getComments: async (data) => undefined,
+  removeComment: async (id) => undefined,
 });
 
 export const useComments = (): UseCommentsType => {
@@ -33,9 +37,8 @@ const CommentsProvider: FC<ICommentsProviderProps> = ({ children }) => {
   const { userId } = useParams<{ userId: string }>();
   const { currentUser } = useAuth();
   useEffect(() => {
-    setComments([]);
-    setIsLoading(false);
-  }, []);
+    void getComments();
+  }, [userId]);
 
   useEffect(() => {
     if (error !== null) {
@@ -59,14 +62,38 @@ const CommentsProvider: FC<ICommentsProviderProps> = ({ children }) => {
     };
     try {
       const { content } = await commentService.createComment(comment);
-      console.log(content);
+      setComments((prevState) => [...prevState, content]);
     } catch (error) {
       errorCatcher(error);
     }
   };
 
+  const getComments = async (): Promise<void> => {
+    try {
+      const { content } = await commentService.getComments(userId);
+      setComments(content);
+    } catch (error) {
+      errorCatcher(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const removeComment = async (id: string): Promise<void> => {
+    try {
+      const { content } = await commentService.removeComment(id);
+      if (content === null) {
+        setComments((prevState) =>
+          prevState.filter((comment) => comment._id !== id)
+        );
+      }
+    } catch (e) {
+      errorCatcher(e);
+    }
+  };
   return (
-    <CommentsContext.Provider value={{ comments, createComment, isLoading }}>
+    <CommentsContext.Provider
+      value={{ comments, createComment, isLoading, getComments, removeComment }}
+    >
       {children}
     </CommentsContext.Provider>
   );
