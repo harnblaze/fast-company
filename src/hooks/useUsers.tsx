@@ -2,6 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 
 import userService from "../services/user.service";
 import { toast } from "react-toastify";
+import { useAuth } from "./useAuth";
 
 export interface IUser {
   _id: string;
@@ -35,6 +36,7 @@ interface IUserProviderProps {
 }
 const UserProvider: FC<IUserProviderProps> = ({ children }) => {
   const [users, setUsers] = useState<IUser[]>([]);
+  const { currentUser } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -59,7 +61,7 @@ const UserProvider: FC<IUserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     void getUsers();
-  }, []);
+  }, [currentUser]);
   useEffect(() => {
     if (error !== null) {
       toast.error(error);

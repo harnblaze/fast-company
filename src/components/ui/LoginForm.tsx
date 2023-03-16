@@ -43,7 +43,8 @@ const LoginForm: FC = () => {
     try {
       await signIn(data);
       history.push(
-        history.location.state.from.pathname !== undefined
+        history.location?.state?.from?.pathname !== undefined &&
+          history.location?.state?.from?.pathname !== "/login"
           ? history.location.state.from.pathname
           : "/"
       );
@@ -84,7 +85,7 @@ const LoginForm: FC = () => {
         disabled={!isValid}
         className="btn btn-primary w-100 mx-auto"
       >
-        Отправить
+        Войти
       </button>
     </form>
   );

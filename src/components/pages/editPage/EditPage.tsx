@@ -1,13 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
-import { IProfession } from "../../../api/fake.api/professions.api";
-import { IQualities, IQuality } from "../../../api/fake.api/qualities";
+import { IQuality } from "../../../api/fake.api/qualities";
 import { onFormFieldChangeCallback } from "../../../types/callbacks";
 import TextField from "../../common/form/TextField";
 import SelectField from "../../common/form/SelectField";
-import api from "../../../api";
 import RadioField from "../../common/form/RadioField";
 import MultiSelectField from "../../common/form/MultiSelectField";
-import { useHistory } from "react-router-dom";
 import { validator, validatorConfigEditPage } from "../../../utils/validator";
 import {
   dataEditPageState,
@@ -15,6 +12,10 @@ import {
   IQualitiesData,
 } from "../../../types/validatorTypes";
 import BackHistoryButton from "../../common/BackButton";
+import { useAuth } from "../../../hooks/useAuth";
+import { useProfession } from "../../../hooks/useProfessions";
+import { useQuality } from "../../../hooks/useQuality";
+import { useHistory } from "react-router-dom";
 
 interface EditPageProps {
   id: string;
@@ -22,6 +23,7 @@ interface EditPageProps {
 
 const EditPage: FC<EditPageProps> = ({ id }) => {
   const history = useHistory();
+  const { currentUser, updateUser } = useAuth();
   const [data, setData] = useState<dataEditPageState>({
     email: "",
     name: "",
@@ -33,9 +35,9 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
     rate: 0,
     completedMeetings: 0,
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [professions, setProfessions] = useState<IProfession[]>([]);
-  const [qualities, setQualities] = useState<IQualities>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const { professions, isLoading: isProfessionLoading } = useProfession();
+  const { qualities, isLoading: isQualityLoading } = useQuality();
   const [errors, setErrors] = useState({
     email: "",
     name: "",
@@ -43,41 +45,35 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
     qualities: "",
   });
 
-  const transformQualities = (data: IQuality[]): IQualitiesData[] => {
-    return data.map((quality) => ({
+  const transformQualities = (data: string[]): IQualitiesData[] => {
+    return getQualitiesListByIds(data).map((quality) => ({
       label: quality.name,
       value: quality._id,
       color: quality.color,
     }));
   };
-  const getProfessionById = (id: string): IProfession => {
-    const profession = professions.find((prof) => prof?._id === id);
-    return profession as IProfession;
-  };
-  const getQualities = (quals: IQualitiesData[]): IQuality[] => {
-    const qualitiesList: IQuality[] = [];
-    quals.forEach((qual) => {
-      for (const quality in qualities) {
-        if (qual.value === qualities[quality]._id) {
-          qualitiesList.push(qualities[quality]);
+
+  const getQualitiesListByIds = (qualitiesIds: string[]): IQuality[] => {
+    const qualitiesArray = [];
+    for (const qualitiesId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (qualitiesId === quality._id) {
+          qualitiesArray.push(quality);
+          break;
         }
       }
-    });
-    return qualitiesList;
+    }
+    return qualitiesArray;
   };
 
-  const handleSubmit = (event: React.FormEvent): void => {
+  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
-    const isValid = validate();
-    if (!isValid) return;
-    const { profession, qualities } = data;
-    void api.users
-      .update(id, {
-        ...data,
-        profession: getProfessionById(profession),
-        qualities: getQualities(qualities),
-      })
-      .then(() => history.push(`/users/${id}`));
+    await updateUser({
+      ...data,
+      qualities: data.qualities.map((q) => q.value),
+    }).finally(() => {
+      history.push(`/users/${currentUser?._id ?? ""}`);
+    });
   };
 
   const validate = (): boolean => {
@@ -91,34 +87,23 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    api.users
-      .getById(id)
-      .then(({ profession, qualities, ...data }) =>
-        setData((prevState) => ({
-          ...prevState,
-          ...data,
-          qualities: transformQualities(qualities),
-          profession: profession._id,
-        }))
-      )
-      .catch((e) => console.log(e));
-    api.qualities
-      .fetchAll()
-      .then((data) => setQualities(data))
-      .catch((e) => console.log(e));
-    api.professions
-      .fetchAll()
-      .then((data) => setProfessions(data))
-      .catch((e) => console.log(e));
-  }, []);
+    if (
+      !isProfessionLoading &&
+      !isQualityLoading &&
+      currentUser !== undefined
+    ) {
+      setData({
+        ...currentUser,
+        qualities: transformQualities(currentUser.qualities),
+      });
+    }
+  }, [isProfessionLoading, isQualityLoading, currentUser]);
   useEffect(() => {
-    if (data._id !== "" && professions.length > 0) setIsLoading(false);
+    if (data._id !== "" && isLoading) setIsLoading(false);
     validate();
   }, [data, professions]);
 
   const isValid = Object.values(errors).every((el) => el === "");
-
   return (
     <div className="container mt-5">
       <BackHistoryButton />
@@ -127,7 +112,11 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
           {isLoading ? (
             "Loading...."
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={(e) => {
+                void handleSubmit(e);
+              }}
+            >
               <TextField
                 label="Имя"
                 name="name"
@@ -164,7 +153,7 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
               />
               <MultiSelectField
                 label="Выберите ваши качества"
-                options={qualities}
+                options={transformQualities(qualities.map((q) => q._id))}
                 onChange={handleChange}
                 name="qualities"
                 defaultValue={data.qualities}

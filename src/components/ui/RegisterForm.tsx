@@ -22,7 +22,7 @@ const RegisterForm: FC = () => {
     email: "",
     password: "",
     profession: "",
-    gender: "male",
+    sex: "male",
     qualities: [],
     license: false,
   });
@@ -117,9 +117,9 @@ const RegisterForm: FC = () => {
           { name: "Female", value: "female" },
           { name: "Other", value: "other" },
         ]}
-        name={"gender"}
+        name={"sex"}
         onChange={handleChange}
-        value={data.gender}
+        value={data.sex}
         label={"Выберите ваш пол"}
       />
       <MultiSelectField

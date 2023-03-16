@@ -20,7 +20,7 @@ export interface dataRegisterState {
   ["email"]: string;
   ["password"]: string;
   ["profession"]: string;
-  ["gender"]: string;
+  ["sex"]: string;
   ["qualities"]: Array<{ label: string; value: string }>;
   ["license"]: boolean;
 }

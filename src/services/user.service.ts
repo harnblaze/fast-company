@@ -1,5 +1,5 @@
 import httpService from "./http.service";
-import { ICreateUserData } from "../hooks/useAuth";
+import { ICreateUserData, IUpdateUserData } from "../hooks/useAuth";
 import localStorageService from "./localStorage.service";
 
 const endPoint = "user/";
@@ -10,7 +10,7 @@ const userService = {
   },
   create: async (payload: ICreateUserData) => {
     const { data } = await httpService.put(
-      `${endPoint}${payload._id}`,
+      `${endPoint}${localStorageService.getUserID()}`,
       payload
     );
     return data;
@@ -18,6 +18,13 @@ const userService = {
   getCurrentUser: async () => {
     const { data } = await httpService.get(
       endPoint + localStorageService.getUserID()
+    );
+    return data;
+  },
+  update: async (payload: IUpdateUserData) => {
+    const { data } = await httpService.put(
+      `${endPoint}${payload._id}`,
+      payload
     );
     return data;
   },

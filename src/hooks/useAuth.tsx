@@ -13,6 +13,7 @@ import { useHistory } from "react-router-dom";
 interface IUseAuthType {
   signUp: (data: ISignUpData) => Promise<void>;
   createUser: (data: ICreateUserData) => Promise<void>;
+  updateUser: (data: IUpdateUserData) => Promise<void>;
   signIn: (data: ISignInData) => Promise<void>;
   logOut: () => void;
   currentUser: IUser | undefined;
@@ -20,7 +21,7 @@ interface IUseAuthType {
 interface ISignUpData {
   email: string;
   password: string;
-  gender: string;
+  sex: string;
   license: boolean;
   profession: string;
   qualities: string[];
@@ -33,12 +34,25 @@ interface ISignInData {
 }
 
 export interface ICreateUserData {
+  email: string;
   _id: string;
-  gender: string;
+  sex: string;
   image: string;
   license: boolean;
   profession: string;
   qualities: string[];
+  rate: number;
+  completedMeetings: number;
+}
+
+export interface IUpdateUserData {
+  email: string;
+  name: string;
+  _id: string;
+  sex: string;
+  profession: string;
+  qualities: string[];
+  bookmark: boolean;
   rate: number;
   completedMeetings: number;
 }
@@ -53,6 +67,7 @@ export const httpAuth = axios.create({
 const AuthContext = React.createContext<IUseAuthType>({
   signUp: async () => undefined,
   createUser: async () => undefined,
+  updateUser: async () => undefined,
   signIn: async () => undefined,
   logOut: () => undefined,
   currentUser: undefined,
@@ -119,6 +134,7 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
 
       setTokens(data);
       await createUser({
+        email,
         _id: data.localId,
         rate: getRandomInt(1, 10),
         completedMeetings: getRandomInt(0, 200),
@@ -195,9 +211,19 @@ const AuthProvider: FC<IUserProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUser = async (data: IUpdateUserData): Promise<void> => {
+    try {
+      const { content } = await userService.update(data);
+      setCurrentUser(content);
+      setIsLoading(false);
+    } catch (error) {
+      errorCatcher(error);
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ signUp, createUser, signIn, logOut, currentUser }}
+      value={{ signUp, createUser, signIn, logOut, currentUser, updateUser }}
     >
       {isLoading !== undefined ? children : "Loading..."}
     </AuthContext.Provider>
