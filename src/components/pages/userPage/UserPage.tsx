@@ -2,16 +2,17 @@ import React, { FC } from "react";
 import UserCard from "../../ui/UserCard";
 import MeetingsCard from "../../ui/MeetingsCard";
 import CommentsCard from "../../ui/CommentsCard";
-import { useUser } from "../../../hooks/useUsers";
 import QualitiesCard from "../../ui/QualitiesCard";
 import CommentsProvider from "../../../hooks/useComments";
+import { useAppSelector } from "../../../store/hooks";
+import { getUserById } from "../../../store/users";
 
 interface IUserPageProps {
   id: string;
 }
 const UserPage: FC<IUserPageProps> = ({ id }) => {
-  const { getUserById } = useUser();
-  const user = getUserById(id);
+  const user = useAppSelector(getUserById(id));
+
   if (user === undefined) return <h1>loading...</h1>;
   return (
     <>

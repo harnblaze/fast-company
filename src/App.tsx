@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { loadQualitiesList } from "./store/qualities";
 import { useAppDispatch } from "./store/hooks";
 import { loadProfessionsList } from "./store/professions";
+import { loadUsersList } from "./store/users";
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ const App: FC = () => {
   useEffect(() => {
     void dispatch(loadQualitiesList());
     void dispatch(loadProfessionsList());
+    void dispatch(loadUsersList());
   }, []);
 
   return (

@@ -1,8 +1,9 @@
 import React, { FC } from "react";
 import { IComment } from "../../../api/fake.api/comments";
 import { displayDate } from "../../../utils/displayDate";
-import { useUser } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
+import { useAppSelector } from "../../../store/hooks";
+import { getUserById } from "../../../store/users";
 
 interface ICommentProps {
   comment: IComment;
@@ -10,9 +11,8 @@ interface ICommentProps {
 }
 
 const Comment: FC<ICommentProps> = ({ comment, onRemove }) => {
-  const { getUserById } = useUser();
   const { currentUser } = useAuth();
-  const user = getUserById(comment.userId);
+  const user = useAppSelector(getUserById(comment.userId));
 
   const handleClick = (): void => {
     onRemove(comment._id);

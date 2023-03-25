@@ -8,7 +8,7 @@ import GroupList from "../../common/GroupList";
 import UsersTable from "../../ui/UsersTable";
 
 import { IProfession } from "../../../api/fake.api/professions.api";
-import { IUser, useUser } from "../../../hooks/useUsers";
+import { IUser } from "../../../hooks/useUsers";
 import {
   changePageCallback,
   onItemsSelectCallback,
@@ -21,9 +21,10 @@ import {
   getProfessions,
   getProfessionsLoadingStatus,
 } from "../../../store/professions";
+import { getUsers } from "../../../store/users";
 
 const UsersListPage: FC = () => {
-  const { users } = useUser();
+  const users = useAppSelector(getUsers());
   const { currentUser } = useAuth();
   const professions = useAppSelector(getProfessions());
   const isProfessionsLoading = useAppSelector(getProfessionsLoadingStatus());
