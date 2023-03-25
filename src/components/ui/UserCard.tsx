@@ -2,8 +2,9 @@ import React, { FC } from "react";
 
 import { useHistory } from "react-router-dom";
 import { IUser } from "../../hooks/useUsers";
-import { useProfession } from "../../hooks/useProfessions";
 import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector } from "../../store/hooks";
+import { getProfessionById } from "../../store/professions";
 
 interface IUserCardProps {
   user: IUser;
@@ -12,9 +13,10 @@ interface IUserCardProps {
 const UserCard: FC<IUserCardProps> = ({ user }) => {
   const history = useHistory();
   const { currentUser } = useAuth();
-  const { getProfession } = useProfession();
 
-  const profession = getProfession(user.profession);
+  const profession = useAppSelector(
+    getProfessionById(currentUser?.profession ?? "")
+  );
 
   const handleClickEdit = (): void => {
     history.push(history.location.pathname + "/edit");

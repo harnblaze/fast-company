@@ -1,15 +1,19 @@
 import React, { FC } from "react";
-import { useProfession } from "../../hooks/useProfessions";
+import { useAppSelector } from "../../store/hooks";
+import {
+  getProfessionById,
+  getProfessionsLoadingStatus,
+} from "../../store/professions";
 
 interface IProfessionProps {
   id: string;
 }
 
 const Profession: FC<IProfessionProps> = ({ id }) => {
-  const { isLoading, getProfession } = useProfession();
-  const prof = getProfession(id);
+  const profession = useAppSelector(getProfessionById(id));
+  const isLoading = useAppSelector(getProfessionsLoadingStatus());
   if (isLoading) return <>Loading...</>;
-  return <p>{prof?.name}</p>;
+  return <p>{profession?.name}</p>;
 };
 
 export default Profession;

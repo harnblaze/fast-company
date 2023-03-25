@@ -15,13 +15,18 @@ import {
   toggleFavoriteCallback,
 } from "../../../types/callbacks";
 import { ISortType } from "../../../types/interfaces";
-import { useProfession } from "../../../hooks/useProfessions";
 import { useAuth } from "../../../hooks/useAuth";
+import { useAppSelector } from "../../../store/hooks";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus,
+} from "../../../store/professions";
 
 const UsersListPage: FC = () => {
   const { users } = useUser();
   const { currentUser } = useAuth();
-  const { professions, isLoading: professionsLoading } = useProfession();
+  const professions = useAppSelector(getProfessions());
+  const isProfessionsLoading = useAppSelector(getProfessionsLoadingStatus());
   const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState<IProfession | undefined>();
@@ -88,7 +93,7 @@ const UsersListPage: FC = () => {
 
   return (
     <div className="d-flex">
-      {professions.length !== 0 && !professionsLoading && (
+      {professions.length !== 0 && !isProfessionsLoading && (
         <div className="d-flex flex-column flex-shrink-0 p-3">
           <GroupList
             items={professions}

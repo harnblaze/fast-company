@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import qualityService from "../services/quality.service";
 import { AppDispatch, RootState } from "./createStore";
 import { IQuality } from "../api/fake.api/qualities";
+import { isOutDated } from "../utils/isOutDated";
 
 interface IQualitiesSliceState {
   entities: IQuality[];
@@ -38,10 +39,6 @@ const qualitiesSlice = createSlice({
 const { reducer: qualitiesReducer, actions } = qualitiesSlice;
 const { qualitiesRequested, qualitiesRequestFailed, qualitiesReceived } =
   actions;
-
-const isOutDated = (date: number): boolean => {
-  return Date.now() - date > 10 * 60 * 1000;
-};
 
 export const loadQualitiesList =
   () => async (dispatch: AppDispatch, getState?: () => RootState) => {

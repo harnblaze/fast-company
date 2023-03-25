@@ -13,13 +13,16 @@ import {
 } from "../../../types/validatorTypes";
 import BackHistoryButton from "../../common/BackButton";
 import { useAuth } from "../../../hooks/useAuth";
-import { useProfession } from "../../../hooks/useProfessions";
 import { useHistory } from "react-router-dom";
 import { useAppSelector } from "../../../store/hooks";
 import {
   getQualities,
   getQualitiesLoadingStatus,
 } from "../../../store/qualities";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus,
+} from "../../../store/professions";
 
 interface EditPageProps {
   id: string;
@@ -40,7 +43,9 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
     completedMeetings: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const { professions, isLoading: isProfessionLoading } = useProfession();
+
+  const professions = useAppSelector(getProfessions());
+  const isProfessionsLoading = useAppSelector(getProfessionsLoadingStatus());
   const qualities = useAppSelector(getQualities());
   const isQualityLoading = useAppSelector(getQualitiesLoadingStatus());
   const [errors, setErrors] = useState({
@@ -93,7 +98,7 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
 
   useEffect(() => {
     if (
-      !isProfessionLoading &&
+      !isProfessionsLoading &&
       !isQualityLoading &&
       currentUser !== undefined
     ) {
@@ -102,7 +107,7 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
         qualities: transformQualities(currentUser.qualities),
       });
     }
-  }, [isProfessionLoading, isQualityLoading, currentUser]);
+  }, [isProfessionsLoading, isQualityLoading, currentUser]);
   useEffect(() => {
     if (data._id !== "" && isLoading) setIsLoading(false);
     validate();

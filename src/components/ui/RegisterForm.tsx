@@ -11,11 +11,11 @@ import RadioField from "../common/form/RadioField";
 import MultiSelectField from "../common/form/MultiSelectField";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
-import { useProfession } from "../../hooks/useProfessions";
 import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks";
 import { getQualities } from "../../store/qualities";
+import { getProfessions } from "../../store/professions";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -28,7 +28,7 @@ const RegisterForm: FC = () => {
     license: false,
   });
   const qualities = useAppSelector(getQualities());
-  const { professions } = useProfession();
+  const professions = useAppSelector(getProfessions());
   const { signUp } = useAuth();
   const [errors, setErrors] = useState({
     name: "",
