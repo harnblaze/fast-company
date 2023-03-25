@@ -1,13 +1,11 @@
 import React, { FC } from "react";
-import { useQuality } from "../../../hooks/useQuality";
+import { IQuality } from "../../../api/fake.api/qualities";
 
 interface IQualityProps {
-  id: string;
+  quality: IQuality;
 }
 
-const Quality: FC<IQualityProps> = ({ id }) => {
-  const { getQuality } = useQuality();
-  const quality = getQuality(id);
+const Quality: FC<IQualityProps> = ({ quality }) => {
   return (
     <span className={`badge m-1 bg-${quality?.color ?? ""}`}>
       {quality?.name}

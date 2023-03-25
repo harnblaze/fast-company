@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import qualityService from "../services/quality.service";
-import { AppDispatch } from "./createStore";
+import { AppDispatch, RootState } from "./createStore";
 import { IQuality } from "../api/fake.api/qualities";
 
 interface IQualitiesSliceState {
-  entities: IQuality[] | null;
+  entities: IQuality[];
   isLoading: boolean;
   error: any | null;
 }
 const initialState: IQualitiesSliceState = {
-  entities: null,
+  entities: [],
   isLoading: true,
   error: null,
 };
@@ -45,5 +45,26 @@ export const loadQualitiesList = () => async (dispatch: AppDispatch) => {
     dispatch(qualitiesRequestFailed(e.message));
   }
 };
+
+export const getQualities = () => (state: RootState) =>
+  state.qualities.entities;
+export const getQualitiesLoadingStatus = () => (state: RootState) =>
+  state.qualities.isLoading;
+export const getQualitiesByIds =
+  (qualitiesIds: string[]) => (state: RootState) => {
+    if (state.qualities.entities.length > 0) {
+      const qualitiesArray = [];
+      for (const qualitiesId of qualitiesIds) {
+        for (const quality of state.qualities.entities) {
+          if (qualitiesId === quality._id) {
+            qualitiesArray.push(quality);
+            break;
+          }
+        }
+      }
+      return qualitiesArray;
+    }
+    return [];
+  };
 
 export default qualitiesReducer;

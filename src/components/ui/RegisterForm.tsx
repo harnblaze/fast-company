@@ -12,9 +12,10 @@ import MultiSelectField from "../common/form/MultiSelectField";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
 import { useProfession } from "../../hooks/useProfessions";
-import { useQuality } from "../../hooks/useQuality";
 import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
+import { useAppSelector } from "../../store/hooks";
+import { getQualities } from "../../store/qualities";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -26,7 +27,7 @@ const RegisterForm: FC = () => {
     qualities: [],
     license: false,
   });
-  const { qualities } = useQuality();
+  const qualities = useAppSelector(getQualities());
   const { professions } = useProfession();
   const { signUp } = useAuth();
   const [errors, setErrors] = useState({

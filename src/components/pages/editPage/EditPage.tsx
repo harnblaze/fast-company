@@ -14,8 +14,12 @@ import {
 import BackHistoryButton from "../../common/BackButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfession } from "../../../hooks/useProfessions";
-import { useQuality } from "../../../hooks/useQuality";
 import { useHistory } from "react-router-dom";
+import { useAppSelector } from "../../../store/hooks";
+import {
+  getQualities,
+  getQualitiesLoadingStatus,
+} from "../../../store/qualities";
 
 interface EditPageProps {
   id: string;
@@ -37,7 +41,8 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const { professions, isLoading: isProfessionLoading } = useProfession();
-  const { qualities, isLoading: isQualityLoading } = useQuality();
+  const qualities = useAppSelector(getQualities());
+  const isQualityLoading = useAppSelector(getQualitiesLoadingStatus());
   const [errors, setErrors] = useState({
     email: "",
     name: "",

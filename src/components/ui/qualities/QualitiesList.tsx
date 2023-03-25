@@ -1,19 +1,25 @@
 import React, { FC } from "react";
 
 import Quality from "./Quality";
-import { useQuality } from "../../../hooks/useQuality";
+import { useAppSelector } from "../../../store/hooks";
+import {
+  getQualitiesByIds,
+  getQualitiesLoadingStatus,
+} from "../../../store/qualities";
 
 interface IQualitiesListProps {
   qualities: string[];
 }
 
 const QualitiesList: FC<IQualitiesListProps> = ({ qualities }) => {
-  const { isLoading } = useQuality();
+  const isLoading = useAppSelector(getQualitiesLoadingStatus());
   if (isLoading) return <>Loading...</>;
+  const qualitiesList = useAppSelector(getQualitiesByIds(qualities));
+
   return (
     <>
-      {qualities.map((quality) => (
-        <Quality id={quality} key={quality} />
+      {qualitiesList.map((quality) => (
+        <Quality quality={quality} key={quality._id} />
       ))}
     </>
   );
