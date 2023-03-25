@@ -7,11 +7,13 @@ interface IQualitiesSliceState {
   entities: IQuality[];
   isLoading: boolean;
   error: any | null;
+  lastFetch: number;
 }
 const initialState: IQualitiesSliceState = {
   entities: [],
   isLoading: true,
   error: null,
+  lastFetch: 0,
 };
 
 const qualitiesSlice = createSlice({
@@ -23,6 +25,7 @@ const qualitiesSlice = createSlice({
     },
     qualitiesReceived: (state, action: PayloadAction<IQuality[]>) => {
       state.entities = action.payload;
+      state.lastFetch = Date.now();
       state.isLoading = false;
     },
     qualitiesRequestFailed: (state, action: PayloadAction<any>) => {
@@ -36,15 +39,26 @@ const { reducer: qualitiesReducer, actions } = qualitiesSlice;
 const { qualitiesRequested, qualitiesRequestFailed, qualitiesReceived } =
   actions;
 
-export const loadQualitiesList = () => async (dispatch: AppDispatch) => {
-  dispatch(qualitiesRequested());
-  try {
-    const { content } = await qualityService.get();
-    dispatch(qualitiesReceived(content));
-  } catch (e: any) {
-    dispatch(qualitiesRequestFailed(e.message));
-  }
+const isOutDated = (date: number): boolean => {
+  return Date.now() - date > 10 * 60 * 1000;
 };
+
+export const loadQualitiesList =
+  () => async (dispatch: AppDispatch, getState?: () => RootState) => {
+    if (getState !== undefined) {
+      const { lastFetch } = getState().qualities;
+      if (isOutDated(lastFetch)) {
+        dispatch(qualitiesRequested());
+      }
+    }
+
+    try {
+      const { content } = await qualityService.get();
+      dispatch(qualitiesReceived(content));
+    } catch (e: any) {
+      dispatch(qualitiesRequestFailed(e.message));
+    }
+  };
 
 export const getQualities = () => (state: RootState) =>
   state.qualities.entities;

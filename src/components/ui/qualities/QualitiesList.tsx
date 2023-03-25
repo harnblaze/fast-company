@@ -1,10 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 
 import Quality from "./Quality";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   getQualitiesByIds,
   getQualitiesLoadingStatus,
+  loadQualitiesList,
 } from "../../../store/qualities";
 
 interface IQualitiesListProps {
@@ -12,8 +13,14 @@ interface IQualitiesListProps {
 }
 
 const QualitiesList: FC<IQualitiesListProps> = ({ qualities }) => {
+  const dispatch = useAppDispatch();
   const isLoading = useAppSelector(getQualitiesLoadingStatus());
+
+  useEffect(() => {
+    void dispatch(loadQualitiesList());
+  }, []);
   if (isLoading) return <>Loading...</>;
+
   const qualitiesList = useAppSelector(getQualitiesByIds(qualities));
 
   return (
