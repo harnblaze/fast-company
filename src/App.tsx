@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Navbar from "./components/ui/Navbar";
 import Main from "./layouts/Main";
@@ -13,8 +13,16 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import LogOut from "./layouts/LogOut";
 
 import "react-toastify/dist/ReactToastify.css";
+import { loadQualitiesList } from "./store/qualities";
+import { useAppDispatch } from "./store/hooks";
 
 const App: FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    void dispatch(loadQualitiesList());
+  }, []);
+
   return (
     <>
       <AuthProvider>
