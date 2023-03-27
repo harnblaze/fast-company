@@ -16,15 +16,24 @@ interface IUsersSliceState {
   isLoggedIn: boolean;
   dataLoaded: boolean;
 }
-
-const initialState: IUsersSliceState = {
-  entities: [],
-  isLoading: true,
-  error: null,
-  auth: null,
-  isLoggedIn: false,
-  dataLoaded: false,
-};
+const initialState: IUsersSliceState =
+  localStorageService.getAccessToken() !== ""
+    ? {
+        entities: [],
+        isLoading: true,
+        error: null,
+        auth: { userId: localStorageService.getUserID() },
+        isLoggedIn: true,
+        dataLoaded: false,
+      }
+    : {
+        entities: [],
+        isLoading: false,
+        error: null,
+        auth: null,
+        isLoggedIn: false,
+        dataLoaded: false,
+      };
 
 const usersSlice = createSlice({
   name: "users",
