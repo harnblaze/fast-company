@@ -3,8 +3,9 @@ import { IUser } from "../hooks/useUsers";
 import { AppDispatch, RootState } from "./createStore";
 import userService from "../services/user.service";
 import authService from "../services/auth.service";
-import { ISignUpData } from "../hooks/useAuth";
+import { ICreateUserData, ISignUpData } from "../hooks/useAuth";
 import localStorageService from "../services/localStorage.service";
+import { getRandomInt } from "../utils/randomInt";
 
 interface IUsersSliceState {
   entities: IUser[];
@@ -44,6 +45,9 @@ const usersSlice = createSlice({
     authRequestFailed: (state, action) => {
       state.error = { ...action.payload };
     },
+    userCreated: (state, action: PayloadAction<IUser>) => {
+      state.entities.push(action.payload);
+    },
   },
 });
 
@@ -54,8 +58,23 @@ const {
   usersReceived,
   authRequestSuccess,
   authRequestFailed,
+  userCreated,
 } = actions;
 const authRequested = createAction("users/authRequested");
+const userCreateRequested = createAction("users/userCreateRequested");
+const userCreateFailed = createAction("users/userCreateFailed");
+
+const createUser =
+  (payload: ICreateUserData) => async (dispatch: AppDispatch) => {
+    dispatch(userCreateRequested());
+    try {
+      const { content } = await userService.create(payload);
+      dispatch(userCreated(content));
+    } catch (error: any) {
+      dispatch(userCreateFailed(error.message));
+    }
+  };
+
 export const singUp =
   ({ email, password, ...rest }: ISignUpData) =>
   async (dispatch: AppDispatch) => {
@@ -64,6 +83,20 @@ export const singUp =
       const data = await authService.register({ email, password, ...rest });
       localStorageService.setTokens(data);
       dispatch(authRequestSuccess({ userId: data.localId }));
+      void dispatch(
+        createUser({
+          email,
+          _id: data.localId,
+          rate: getRandomInt(1, 10),
+          completedMeetings: getRandomInt(0, 200),
+          image: `https://avatars.dicebear.com/api/avataaars/${(
+            Math.random() + 1
+          )
+            .toString(36)
+            .substring(7)}.svg`,
+          ...rest,
+        })
+      );
     } catch (e: any) {
       dispatch(authRequestFailed(e.message));
     }
@@ -71,7 +104,6 @@ export const singUp =
 
 export const loadUsersList = () => async (dispatch: AppDispatch) => {
   dispatch(usersRequested());
-
   try {
     const { content } = await userService.get();
     dispatch(usersReceived(content));
