@@ -5,7 +5,8 @@ import { dataLoginState, errorLoginState } from "../../types/validatorTypes";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAppDispatch } from "../../store/hooks";
+import { signIn } from "../../store/users";
 
 const LoginForm: FC = () => {
   const [data, setData] = useState<dataLoginState>({
@@ -18,7 +19,7 @@ const LoginForm: FC = () => {
     password: "",
   });
   const history = useHistory<any>();
-  const { signIn } = useAuth();
+  const dispatch = useAppDispatch();
 
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
@@ -35,23 +36,16 @@ const LoginForm: FC = () => {
     return Object.values(errors).every((el) => el === "");
   };
 
-  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
+  const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-
-    try {
-      await signIn(data);
-      history.push(
-        history.location?.state?.from?.pathname !== undefined &&
-          history.location?.state?.from?.pathname !== "/login"
-          ? history.location.state.from.pathname
-          : "/"
-      );
-    } catch (error: any) {
-      setErrors(error);
-      console.log(error);
-    }
+    const redirect =
+      history.location?.state?.from?.pathname !== undefined &&
+      history.location?.state?.from?.pathname !== "/login"
+        ? history.location.state.from.pathname
+        : "/";
+    void dispatch(signIn({ payload: data, redirect }));
   };
 
   const isValid = Object.values(errors).every((el) => el === "");

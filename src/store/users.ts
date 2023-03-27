@@ -3,7 +3,7 @@ import { IUser } from "../hooks/useUsers";
 import { AppDispatch, RootState } from "./createStore";
 import userService from "../services/user.service";
 import authService from "../services/auth.service";
-import { ICreateUserData, ISignUpData } from "../hooks/useAuth";
+import { ICreateUserData, ISignInData, ISignUpData } from "../hooks/useAuth";
 import localStorageService from "../services/localStorage.service";
 import { getRandomInt } from "../utils/randomInt";
 import history from "../utils/history";
@@ -74,6 +74,20 @@ const createUser =
       history.push("/users");
     } catch (error: any) {
       dispatch(userCreateFailed(error.message));
+    }
+  };
+
+export const signIn =
+  ({ payload, redirect }: { payload: ISignInData; redirect: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(authRequested);
+    try {
+      const data = await authService.login(payload);
+      localStorageService.setTokens(data);
+      dispatch(authRequestSuccess({ userId: data.localId }));
+      history.push(redirect);
+    } catch (e: any) {
+      dispatch(authRequestFailed(e.message));
     }
   };
 
