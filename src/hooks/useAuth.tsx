@@ -18,7 +18,7 @@ interface IUseAuthType {
   logOut: () => void;
   currentUser: IUser | undefined;
 }
-interface ISignUpData {
+export interface ISignUpData {
   email: string;
   password: string;
   sex: string;
@@ -27,7 +27,7 @@ interface ISignUpData {
   qualities: string[];
 }
 
-interface ISignInData {
+export interface ISignInData {
   email: string;
   password: string;
   stayOn: boolean;

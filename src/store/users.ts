@@ -1,18 +1,25 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../hooks/useUsers";
 import { AppDispatch, RootState } from "./createStore";
 import userService from "../services/user.service";
+import authService from "../services/auth.service";
+import { ISignUpData } from "../hooks/useAuth";
+import localStorageService from "../services/localStorage.service";
 
 interface IUsersSliceState {
   entities: IUser[];
   isLoading: boolean;
   error: any | null;
+  auth: null | string;
+  isLoggedIn: boolean;
 }
 
 const initialState: IUsersSliceState = {
   entities: [],
   isLoading: true,
   error: null,
+  auth: null,
+  isLoggedIn: false,
 };
 
 const usersSlice = createSlice({
@@ -30,11 +37,37 @@ const usersSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    authRequestSuccess: (state, action) => {
+      state.auth = { ...action.payload };
+      state.isLoggedIn = true;
+    },
+    authRequestFailed: (state, action) => {
+      state.error = { ...action.payload };
+    },
   },
 });
 
 const { reducer: usersReducer, actions } = usersSlice;
-const { usersRequested, usersRequestFailed, usersReceived } = actions;
+const {
+  usersRequested,
+  usersRequestFailed,
+  usersReceived,
+  authRequestSuccess,
+  authRequestFailed,
+} = actions;
+const authRequested = createAction("users/authRequested");
+export const singUp =
+  ({ email, password, ...rest }: ISignUpData) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(authRequested());
+    try {
+      const data = await authService.register({ email, password, ...rest });
+      localStorageService.setTokens(data);
+      dispatch(authRequestSuccess({ userId: data.localId }));
+    } catch (e: any) {
+      dispatch(authRequestFailed(e.message));
+    }
+  };
 
 export const loadUsersList = () => async (dispatch: AppDispatch) => {
   dispatch(usersRequested());

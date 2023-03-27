@@ -11,11 +11,10 @@ import RadioField from "../common/form/RadioField";
 import MultiSelectField from "../common/form/MultiSelectField";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { getQualities } from "../../store/qualities";
 import { getProfessions } from "../../store/professions";
+import { singUp } from "../../store/users";
 
 const RegisterForm: FC = () => {
   const [data, setData] = useState<dataRegisterState>({
@@ -29,7 +28,7 @@ const RegisterForm: FC = () => {
   });
   const qualities = useAppSelector(getQualities());
   const professions = useAppSelector(getProfessions());
-  const { signUp } = useAuth();
+  const dispatch = useAppDispatch();
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -38,7 +37,6 @@ const RegisterForm: FC = () => {
     qualities: "",
     license: "",
   });
-  const history = useHistory();
 
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
@@ -55,18 +53,12 @@ const RegisterForm: FC = () => {
     return Object.values(errors).every((el) => el === "");
   };
 
-  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
+  const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
     const newData = { ...data, qualities: data.qualities.map((q) => q.value) };
-    try {
-      await signUp(newData);
-      history.push("/");
-    } catch (error: any) {
-      setErrors(error);
-      console.log(error);
-    }
+    void dispatch(singUp(newData));
   };
 
   const isValid = Object.values(errors).every((el) => el === "");
