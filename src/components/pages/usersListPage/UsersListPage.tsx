@@ -15,17 +15,16 @@ import {
   toggleFavoriteCallback,
 } from "../../../types/callbacks";
 import { ISortType } from "../../../types/interfaces";
-import { useAuth } from "../../../hooks/useAuth";
 import { useAppSelector } from "../../../store/hooks";
 import {
   getProfessions,
   getProfessionsLoadingStatus,
 } from "../../../store/professions";
-import { getUsers } from "../../../store/users";
+import { getCurrentUserId, getUsers } from "../../../store/users";
 
 const UsersListPage: FC = () => {
   const users = useAppSelector(getUsers());
-  const { currentUser } = useAuth();
+  const currentUserId = useAppSelector(getCurrentUserId());
   const professions = useAppSelector(getProfessions());
   const isProfessionsLoading = useAppSelector(getProfessionsLoadingStatus());
   const [search, setSearch] = useState<string>("");
@@ -85,7 +84,7 @@ const UsersListPage: FC = () => {
         filteredUsers = data;
       }
     }
-    return filteredUsers?.filter((el) => el._id !== currentUser?._id);
+    return filteredUsers?.filter((el) => el._id !== currentUserId);
   };
   const filteredUsers = filterUsers(users);
   const count = filteredUsers?.length ?? 1;

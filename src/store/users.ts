@@ -12,8 +12,9 @@ interface IUsersSliceState {
   entities: IUser[];
   isLoading: boolean;
   error: any | null;
-  auth: null | string;
+  auth: null | { userId: string };
   isLoggedIn: boolean;
+  dataLoaded: boolean;
 }
 
 const initialState: IUsersSliceState = {
@@ -22,6 +23,7 @@ const initialState: IUsersSliceState = {
   error: null,
   auth: null,
   isLoggedIn: false,
+  dataLoaded: false,
 };
 
 const usersSlice = createSlice({
@@ -34,6 +36,7 @@ const usersSlice = createSlice({
     usersReceived: (state, action: PayloadAction<IUser[]>) => {
       state.entities = action.payload;
       state.isLoading = false;
+      state.dataLoaded = true;
     },
     usersRequestFailed: (state, action: PayloadAction<any>) => {
       state.error = action.payload;
@@ -137,5 +140,8 @@ export const getUserById = (id: string) => (state: RootState) => {
   }
 };
 export const getIsLoggedIn = () => (state: RootState) => state.users.isLoggedIn;
+export const getDataLoaded = () => (state: RootState) => state.users.dataLoaded;
+export const getCurrentUserId = () => (state: RootState) =>
+  state.users.auth?.userId;
 
 export default usersReducer;
