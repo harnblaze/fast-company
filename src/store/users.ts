@@ -6,6 +6,7 @@ import authService from "../services/auth.service";
 import { ICreateUserData, ISignUpData } from "../hooks/useAuth";
 import localStorageService from "../services/localStorage.service";
 import { getRandomInt } from "../utils/randomInt";
+import history from "../utils/history";
 
 interface IUsersSliceState {
   entities: IUser[];
@@ -24,7 +25,7 @@ const initialState: IUsersSliceState = {
 };
 
 const usersSlice = createSlice({
-  name: "professions",
+  name: "users",
   initialState,
   reducers: {
     usersRequested: (state) => {
@@ -70,6 +71,7 @@ const createUser =
     try {
       const { content } = await userService.create(payload);
       dispatch(userCreated(content));
+      history.push("/users");
     } catch (error: any) {
       dispatch(userCreateFailed(error.message));
     }
