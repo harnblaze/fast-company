@@ -136,5 +136,6 @@ export const getUserById = (id: string) => (state: RootState) => {
     return state.users.entities.find((user) => user._id === id);
   }
 };
+export const getIsLoggedIn = () => (state: RootState) => state.users.isLoggedIn;
 
 export default usersReducer;
