@@ -3,7 +3,12 @@ import { IUser } from "../hooks/useUsers";
 import { AppDispatch, RootState } from "./createStore";
 import userService from "../services/user.service";
 import authService from "../services/auth.service";
-import { ICreateUserData, ISignInData, ISignUpData } from "../hooks/useAuth";
+import {
+  ICreateUserData,
+  ISignInData,
+  ISignUpData,
+  IUpdateUserData,
+} from "../hooks/useAuth";
 import localStorageService from "../services/localStorage.service";
 import { getRandomInt } from "../utils/randomInt";
 import history from "../utils/history";
@@ -67,6 +72,12 @@ const usersSlice = createSlice({
       state.auth = null;
       state.dataLoaded = false;
     },
+
+    userUpdateSuccess: (state, action: PayloadAction<IUser>) => {
+      state.entities[
+        state.entities.findIndex((user) => user._id === action.payload._id)
+      ] = action.payload;
+    },
   },
 });
 
@@ -79,10 +90,13 @@ const {
   authRequestFailed,
   userCreated,
   userLoggedOut,
+  userUpdateSuccess,
 } = actions;
 const authRequested = createAction("users/authRequested");
 const userCreateRequested = createAction("users/userCreateRequested");
 const userCreateFailed = createAction("users/userCreateFailed");
+const userUpdateRequested = createAction("users/userCreateRequested");
+const userUpdateFailed = createAction("users/userCreateFailed");
 
 const createUser =
   (payload: ICreateUserData) => async (dispatch: AppDispatch) => {
@@ -142,6 +156,19 @@ export const logOut = () => (dispatch: AppDispatch) => {
   dispatch(userLoggedOut());
   history.push("/");
 };
+
+export const updateUser =
+  (payload: IUpdateUserData) => async (dispatch: AppDispatch) => {
+    userUpdateRequested();
+    try {
+      const { content } = await userService.update(payload);
+      console.log(content);
+      await dispatch(userUpdateSuccess(content));
+      history.push(`/users/${payload._id}`);
+    } catch (e: any) {
+      dispatch(userUpdateFailed(e));
+    }
+  };
 
 export const loadUsersList = () => async (dispatch: AppDispatch) => {
   dispatch(usersRequested());

@@ -11,10 +11,8 @@ import {
   errorEditPage,
   IQualitiesData,
 } from "../../../types/validatorTypes";
-import BackHistoryButton from "../../common/BackButton";
-import { useAuth } from "../../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
-import { useAppSelector } from "../../../store/hooks";
+
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   getQualities,
   getQualitiesLoadingStatus,
@@ -23,15 +21,15 @@ import {
   getProfessions,
   getProfessionsLoadingStatus,
 } from "../../../store/professions";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateUser } from "../../../store/users";
+import BackHistoryButton from "../../common/BackButton";
 
 interface EditPageProps {
   id: string;
 }
 
 const EditPage: FC<EditPageProps> = ({ id }) => {
-  const history = useHistory();
-  const { updateUser } = useAuth();
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector(getCurrentUserData());
   const [data, setData] = useState<dataEditPageState>({
     email: "",
@@ -78,14 +76,14 @@ const EditPage: FC<EditPageProps> = ({ id }) => {
     return qualitiesArray;
   };
 
-  const handleSubmit = async (event: React.FormEvent): Promise<void> => {
+  const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
-    await updateUser({
-      ...data,
-      qualities: data.qualities.map((q) => q.value),
-    }).finally(() => {
-      history.push(`/users/${currentUser?._id ?? ""}`);
-    });
+    void dispatch(
+      updateUser({
+        ...data,
+        qualities: data.qualities.map((q) => q.value),
+      })
+    );
   };
 
   const validate = (): boolean => {
