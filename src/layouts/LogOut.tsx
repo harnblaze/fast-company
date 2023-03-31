@@ -1,10 +1,11 @@
 import React, { FC, useEffect } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAppDispatch } from "../store/hooks";
+import { logOut } from "../store/users";
 
 const LogOut: FC = () => {
-  const { logOut } = useAuth();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    logOut();
+    dispatch(logOut());
   }, []);
   return <h1>Loading...</h1>;
 };
