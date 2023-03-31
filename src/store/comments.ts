@@ -1,7 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "./createStore";
 import { IComment } from "../api/fake.api/comments";
 import commentService from "../services/comment.service";
+import { dataCommentResponse } from "../types/validatorTypes";
+import { nanoid } from "nanoid";
 
 interface ICommentsSliceState {
   entities: IComment[];
@@ -30,11 +32,21 @@ const commentsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    commentCreated: (state, action: PayloadAction<IComment>) => {
+      state.entities.push(action.payload);
+    },
   },
 });
 
 const { reducer: commentsReducer, actions } = commentsSlice;
-const { commentsRequestFailed, commentsRequested, commentsReceived } = actions;
+const {
+  commentsRequestFailed,
+  commentsRequested,
+  commentsReceived,
+  commentCreated,
+} = actions;
+
+const commentCreateRequested = createAction("comments/commentCreateRequested");
 
 export const loadCommentsList =
   (userId: string) => async (dispatch: AppDispatch) => {
@@ -44,6 +56,24 @@ export const loadCommentsList =
       dispatch(commentsReceived(content));
     } catch (e: any) {
       dispatch(commentsRequestFailed(e.message));
+    }
+  };
+
+export const createComment =
+  (payload: dataCommentResponse) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(commentCreateRequested());
+    const comment = {
+      ...payload,
+      created_at: Date.now().toString(),
+      userId: getState().users.auth?.userId ?? "",
+      _id: nanoid(),
+    };
+    try {
+      const { content } = await commentService.createComment(comment);
+      dispatch(commentCreated(content));
+    } catch (error: any) {
+      dispatch(commentsRequestFailed(error.message));
     }
   };
 

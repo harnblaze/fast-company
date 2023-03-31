@@ -63,6 +63,10 @@ export interface dataCommentForm {
   content: string;
 }
 
+export interface dataCommentResponse extends dataCommentForm {
+  pageId: string;
+}
+
 export interface errorCommentForm {
   content: string;
 }

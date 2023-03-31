@@ -6,6 +6,7 @@ import { dataCommentForm } from "../../types/validatorTypes";
 import { useComments } from "../../hooks/useComments";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
+  createComment,
   getComments,
   getCommentsLoadingStatus,
   loadCommentsList,
@@ -13,7 +14,7 @@ import {
 import { useParams } from "react-router-dom";
 
 const CommentsCard: FC = () => {
-  const { createComment, removeComment } = useComments();
+  const { removeComment } = useComments();
   const dispatch = useAppDispatch();
   const { userId } = useParams<{ userId: string }>();
   const comments = useAppSelector(getComments());
@@ -24,12 +25,9 @@ const CommentsCard: FC = () => {
   }, [userId]);
 
   const handleSubmit = (data: dataCommentForm): void => {
-    // void api.comments
-    //   .add({ ...data, pageId: userId })
-    //   .then((data) => setComments([...comments, { ...data, pageId: userId }]))
-    //   .catch((e) => console.log(e));
-    void createComment(data);
+    void dispatch(createComment({ ...data, pageId: userId }));
   };
+
   const handleRemoveComment = (id: string): void => {
     // void api.comments
     //   .remove(id)
