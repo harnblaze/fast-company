@@ -1,6 +1,9 @@
 import axios from "axios";
 import { ISignInData, ISignUpData } from "../hooks/useAuth";
-import { ISignInResponse, ISignUpResponse } from "./localStorage.service";
+import localStorageService, {
+  ISignInResponse,
+  ISignUpResponse,
+} from "./localStorage.service";
 
 const httpAuth = axios.create({
   baseURL: "https://identitytoolkit.googleapis.com/v1",
@@ -25,6 +28,18 @@ const authService = {
       email,
       password,
       returnSecureToken: true,
+    });
+    return data;
+  },
+  refresh: async () => {
+    const { data } = await httpAuth.post<{
+      refresh_token: string;
+      expires_in: string;
+      id_token: string;
+      user_id: string;
+    }>("token", {
+      grant_type: "refresh_token",
+      refresh_token: localStorageService.getRefreshToken(),
     });
     return data;
   },

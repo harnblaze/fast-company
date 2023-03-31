@@ -150,6 +150,9 @@ export const getUserById = (id: string) => (state: RootState) => {
 };
 export const getIsLoggedIn = () => (state: RootState) => state.users.isLoggedIn;
 export const getDataLoaded = () => (state: RootState) => state.users.dataLoaded;
+export const getCurrentUserData = () => (state: RootState) => {
+  return state.users.entities.find((el) => el._id === state.users.auth?.userId);
+};
 export const getCurrentUserId = () => (state: RootState) =>
   state.users.auth?.userId;
 

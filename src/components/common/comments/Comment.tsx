@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { IComment } from "../../../api/fake.api/comments";
 import { displayDate } from "../../../utils/displayDate";
-import { useAuth } from "../../../hooks/useAuth";
 import { useAppSelector } from "../../../store/hooks";
-import { getUserById } from "../../../store/users";
+import { getCurrentUserId, getUserById } from "../../../store/users";
 
 interface ICommentProps {
   comment: IComment;
@@ -11,7 +10,7 @@ interface ICommentProps {
 }
 
 const Comment: FC<ICommentProps> = ({ comment, onRemove }) => {
-  const { currentUser } = useAuth();
+  const currentUserID = useAppSelector(getCurrentUserId());
   const user = useAppSelector(getUserById(comment.userId));
 
   const handleClick = (): void => {
@@ -40,7 +39,7 @@ const Comment: FC<ICommentProps> = ({ comment, onRemove }) => {
                       - {displayDate(comment.created_at)}
                     </span>
                   </p>
-                  {user?._id === currentUser?._id ? (
+                  {user?._id === currentUserID ? (
                     <button
                       className="btn btn-sm text-primary d-flex align-items-center"
                       onClick={handleClick}

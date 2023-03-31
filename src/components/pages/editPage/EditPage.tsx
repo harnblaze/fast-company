@@ -23,6 +23,7 @@ import {
   getProfessions,
   getProfessionsLoadingStatus,
 } from "../../../store/professions";
+import { getCurrentUserData } from "../../../store/users";
 
 interface EditPageProps {
   id: string;
@@ -30,7 +31,8 @@ interface EditPageProps {
 
 const EditPage: FC<EditPageProps> = ({ id }) => {
   const history = useHistory();
-  const { currentUser, updateUser } = useAuth();
+  const { updateUser } = useAuth();
+  const currentUser = useAppSelector(getCurrentUserData());
   const [data, setData] = useState<dataEditPageState>({
     email: "",
     name: "",

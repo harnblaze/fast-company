@@ -1,13 +1,15 @@
 import React, { FC, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../store/hooks";
+import { getCurrentUserData } from "../../store/users";
 
 const NavProfile: FC = () => {
-  const { currentUser } = useAuth();
+  const currentUser = useAppSelector(getCurrentUserData());
   const [isOpen, setIsOpen] = useState(false);
   const handleClick: React.MouseEventHandler = () => {
     setIsOpen((prevState) => !prevState);
   };
+  if (currentUser === undefined) return <>Loading...</>;
   return (
     <div className="dropdown" onClick={handleClick}>
       <div className="btn dropdown-toggle d-flex align-items-center">
@@ -21,7 +23,7 @@ const NavProfile: FC = () => {
         />
       </div>
       <div className={`w-100 dropdown-menu${isOpen ? " show" : ""}`}>
-        <Link to={`/users/${currentUser?._id ?? ""}`} className="dropdown-item">
+        <Link to={`/users/${currentUser?._id}`} className="dropdown-item">
           Profile
         </Link>
         <Link to="/logout" className="dropdown-item">

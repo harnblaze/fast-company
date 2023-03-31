@@ -2,9 +2,9 @@ import React, { FC } from "react";
 
 import { useHistory } from "react-router-dom";
 import { IUser } from "../../hooks/useUsers";
-import { useAuth } from "../../hooks/useAuth";
 import { useAppSelector } from "../../store/hooks";
 import { getProfessionById } from "../../store/professions";
+import { getCurrentUserId } from "../../store/users";
 
 interface IUserCardProps {
   user: IUser;
@@ -12,19 +12,18 @@ interface IUserCardProps {
 
 const UserCard: FC<IUserCardProps> = ({ user }) => {
   const history = useHistory();
-  const { currentUser } = useAuth();
+  const currentUserId = useAppSelector(getCurrentUserId());
 
-  const profession = useAppSelector(
-    getProfessionById(currentUser?.profession ?? "")
-  );
+  const profession = useAppSelector(getProfessionById(user.profession));
 
   const handleClickEdit = (): void => {
     history.push(history.location.pathname + "/edit");
   };
+
   return (
     <div className="card mb-3">
       <div className="card-body">
-        {currentUser?._id === user._id ? (
+        {currentUserId === user._id ? (
           <button
             className="position-absolute top-0 end-0 btn btn-light btn-sm"
             onClick={handleClickEdit}

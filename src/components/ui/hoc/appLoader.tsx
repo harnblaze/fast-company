@@ -18,7 +18,7 @@ const AppLoader: FC<PropsWithChildren> = ({ children }) => {
     if (isLoggedIn) {
       void dispatch(loadUsersList());
     }
-  }, []);
+  }, [isLoggedIn]);
   if (usersStatusLoading) return <>Loading...</>;
   return <>{children}</>;
 };
