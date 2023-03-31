@@ -3,18 +3,17 @@ import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/AddCommentForm";
 import CommentsList from "../common/comments/CommentsList";
 import { dataCommentForm } from "../../types/validatorTypes";
-import { useComments } from "../../hooks/useComments";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   createComment,
   getComments,
   getCommentsLoadingStatus,
   loadCommentsList,
+  removeComment,
 } from "../../store/comments";
 import { useParams } from "react-router-dom";
 
 const CommentsCard: FC = () => {
-  const { removeComment } = useComments();
   const dispatch = useAppDispatch();
   const { userId } = useParams<{ userId: string }>();
   const comments = useAppSelector(getComments());
@@ -28,14 +27,9 @@ const CommentsCard: FC = () => {
     void dispatch(createComment({ ...data, pageId: userId }));
   };
 
-  const handleRemoveComment = (id: string): void => {
-    // void api.comments
-    //   .remove(id)
-    //   .then((id) => {
-    //     setComments(comments.filter((x) => x._id !== id));
-    //   })
-    //   .catch((e) => console.log(e));
-    void removeComment(id);
+  const handleRemoveComment = async (id: string): Promise<void> => {
+    await dispatch(removeComment(id));
+    await dispatch(loadCommentsList(userId));
   };
 
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
@@ -55,7 +49,9 @@ const CommentsCard: FC = () => {
           {!isLoading ? (
             <CommentsList
               comments={sortedComments}
-              onRemove={handleRemoveComment}
+              onRemove={(id) => {
+                void handleRemoveComment(id);
+              }}
             />
           ) : (
             <p>Loading...</p>
