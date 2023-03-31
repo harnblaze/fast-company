@@ -1,12 +1,27 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/AddCommentForm";
 import CommentsList from "../common/comments/CommentsList";
 import { dataCommentForm } from "../../types/validatorTypes";
 import { useComments } from "../../hooks/useComments";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+  getComments,
+  getCommentsLoadingStatus,
+  loadCommentsList,
+} from "../../store/comments";
+import { useParams } from "react-router-dom";
 
 const CommentsCard: FC = () => {
-  const { comments, createComment, removeComment } = useComments();
+  const { createComment, removeComment } = useComments();
+  const dispatch = useAppDispatch();
+  const { userId } = useParams<{ userId: string }>();
+  const comments = useAppSelector(getComments());
+  const isLoading = useAppSelector(getCommentsLoadingStatus());
+
+  useEffect(() => {
+    void dispatch(loadCommentsList(userId));
+  }, [userId]);
 
   const handleSubmit = (data: dataCommentForm): void => {
     // void api.comments
@@ -39,10 +54,14 @@ const CommentsCard: FC = () => {
         <div className="card-body ">
           <h2>Comments</h2>
           <hr />
-          <CommentsList
-            comments={sortedComments}
-            onRemove={handleRemoveComment}
-          />
+          {!isLoading ? (
+            <CommentsList
+              comments={sortedComments}
+              onRemove={handleRemoveComment}
+            />
+          ) : (
+            <p>Loading...</p>
+          )}
         </div>
       </div>
     </>
