@@ -5,8 +5,8 @@ import { dataLoginState, errorLoginState } from "../../types/validatorTypes";
 import { onFormFieldChangeCallback } from "../../types/callbacks";
 import CheckboxField from "../common/form/checkboxField";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch } from "../../store/hooks";
-import { signIn } from "../../store/users";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { getAuthErrors, signIn } from "../../store/users";
 
 const LoginForm: FC = () => {
   const [data, setData] = useState<dataLoginState>({
@@ -20,7 +20,7 @@ const LoginForm: FC = () => {
   });
   const history = useHistory<any>();
   const dispatch = useAppDispatch();
-
+  const loginError = useAppSelector(getAuthErrors());
   const handleChange: onFormFieldChangeCallback = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
@@ -74,6 +74,7 @@ const LoginForm: FC = () => {
       <CheckboxField name="stayOn" value={data.stayOn} onChange={handleChange}>
         Оставаться в системе
       </CheckboxField>
+      {loginError !== null && <p className="text-danger">{loginError}</p>}
       <button
         type="submit"
         disabled={!isValid}

@@ -12,6 +12,7 @@ import {
 import localStorageService from "../services/localStorage.service";
 import { getRandomInt } from "../utils/randomInt";
 import history from "../utils/history";
+import { generateAuthError } from "../utils/generateAuthError";
 
 interface IUsersSliceState {
   entities: IUser[];
@@ -56,12 +57,15 @@ const usersSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    authRequested: (state) => {
+      state.error = null;
+    },
     authRequestSuccess: (state, action) => {
       state.auth = { ...action.payload };
       state.isLoggedIn = true;
     },
     authRequestFailed: (state, action) => {
-      state.error = { ...action.payload };
+      state.error = action.payload;
     },
     userCreated: (state, action: PayloadAction<IUser>) => {
       state.entities.push(action.payload);
@@ -86,13 +90,14 @@ const {
   usersRequested,
   usersRequestFailed,
   usersReceived,
+  authRequested,
   authRequestSuccess,
   authRequestFailed,
   userCreated,
   userLoggedOut,
   userUpdateSuccess,
 } = actions;
-const authRequested = createAction("users/authRequested");
+
 const userCreateRequested = createAction("users/userCreateRequested");
 const userCreateFailed = createAction("users/userCreateFailed");
 const userUpdateRequested = createAction("users/userCreateRequested");
@@ -120,7 +125,13 @@ export const signIn =
       dispatch(authRequestSuccess({ userId: data.localId }));
       history.push(redirect);
     } catch (e: any) {
-      dispatch(authRequestFailed(e.message));
+      const { code, message } = e.response.data.error;
+      if (code === 400) {
+        const errorMessage = generateAuthError(message);
+        dispatch(authRequestFailed(errorMessage));
+      } else {
+        dispatch(authRequestFailed(e.message));
+      }
     }
   };
 
@@ -162,7 +173,6 @@ export const updateUser =
     userUpdateRequested();
     try {
       const { content } = await userService.update(payload);
-      console.log(content);
       await dispatch(userUpdateSuccess(content));
       history.push(`/users/${payload._id}`);
     } catch (e: any) {
@@ -195,5 +205,6 @@ export const getCurrentUserData = () => (state: RootState) => {
 };
 export const getCurrentUserId = () => (state: RootState) =>
   state.users.auth?.userId;
+export const getAuthErrors = () => (state: RootState) => state.users.error;
 
 export default usersReducer;
